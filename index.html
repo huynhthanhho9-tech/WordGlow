@@ -213,6 +213,14 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .timer i{display:block;height:100%;width:100%;background:var(--glow);border-radius:99px}
 .timer.low i{background:#ff7a6b}
 .q.shake{animation:hurt .45s}
+.review{margin-top:14px;border-radius:12px;padding:14px 16px;border:1.5px solid var(--line);background:var(--bg)}
+.review.ok{border-color:var(--good);background:var(--good-soft)} .review.no{border-color:var(--bad);background:var(--bad-soft)}
+.review .rv-h{font-weight:600;font-size:15px}
+.review.ok .rv-h{color:var(--good)} .review.no .rv-h{color:var(--bad)}
+.review .rv-w{font-size:22px;font-weight:600;color:var(--ink);margin-top:6px;line-height:1.25}
+.review .rv-vi{font-size:16px;color:var(--ink);margin-top:2px}
+.review .rv-ex{font-family:var(--f-read);font-size:14px;line-height:1.6;color:var(--muted);margin-top:8px}
+.review .rv-ex b{color:var(--ink);background:var(--mark);padding:0 2px;border-radius:3px}
 .g-start{text-align:center;padding:28px 18px 24px}
 .g-start h2{font-size:clamp(24px,5vw,32px);margin:6px 0 8px;color:#fff}
 .g-start p{color:#c9d2ea;max-width:46ch;margin:0 auto 6px}
@@ -611,6 +619,17 @@ function renderGame(){
   gTimer=setInterval(()=>{ const left=Q_TIME-(Date.now()-g.t0)/1000; const bar=$("#gbar"); if(!bar) return stopGame();
     bar.style.width=Math.max(0,left/Q_TIME*100)+"%"; $("#gtimer").classList.toggle("low",left<6); if(left<=0) answer(null); },100);
 }
+function reviewHTML(w,id,head,next){
+  return `<div class="rv-h">${head}</div><div class="rv-w">${esc(w.w)}</div><div class="ipa">${esc(w.ipa)}</div>
+    <div class="rv-vi">${esc(w.vi)}</div><div class="rv-ex">${exampleHTML(id)}</div>
+    <div class="btnrow" style="margin-top:12px;justify-content:space-between"><button class="btn" id="gsay">${ICON_PLAY}<span>Nghe lại</span></button>
+    <button class="btn primary" id="gnext">${next}</button></div>`;
+}
+function bindReview(w,go){
+  $("#gsay").onclick=e=>speak(w.w,.9,e.currentTarget);
+  const b=$("#gnext"); b.onclick=go; b.focus({preventScroll:true});
+  $("#gfb").scrollIntoView({block:"nearest",behavior:"smooth"});
+}
 function answer(n){
   const g=gameState; if(!g||g.answered) return; g.answered=true; stopGame();
   const q=g.q, w=L.words[q.id], ok=n===q.id, box=$("#game");
@@ -620,17 +639,15 @@ function answer(n){
     const left=Math.max(0,Q_TIME-(Date.now()-g.t0)/1000);
     g.streak++; const pts=100+Math.round(left*5)+(g.streak>=2?g.streak*20:0); g.score+=pts; g.pos++;
     SFX.ok(); speak(w.w);
-    fb.className="fb ok"; fb.innerHTML=`Chính xác! +${pts} điểm · <b>${esc(w.w)}</b> = ${esc(w.vi)}`;
+    fb.className="review ok"; fb.innerHTML=reviewHTML(w,q.id,`Chính xác! +${pts} điểm`, g.pos>=g.steps?"Xem kết quả":"Câu tiếp theo →");
     const n2=g.steps; hero.classList.add("jump"); hero.style.left=g.pos>=n2?"calc(100% - 4px)":`calc(${(g.pos/n2)*100}% * .92)`;
     box.querySelectorAll(".stone")[g.pos]?.classList.add("lit");
-    setTimeout(()=>{ if(gameState!==g) return; if(g.pos>=g.steps){ g.phase="win"; SFX.win(); renderGame(); } else nextQ(); },1300);
+    bindReview(w,()=>{ if(g.pos>=g.steps){ g.phase="win"; SFX.win(); renderGame(); } else nextQ(); });
   } else {
     g.streak=0; g.lives--; SFX.no(); hero.classList.add("hurt"); $("#gq").classList.add("shake");
-    fb.className="fb no"; fb.innerHTML=(n===null?"Hết giờ! ":"Chưa đúng. ")+`Đáp án: <b>${esc(w.w)}</b> <span class="ipa">${esc(w.ipa)}</span> = ${esc(w.vi)}
-      <div class="btnrow" style="margin-top:12px"><button class="btn" id="gsay">${ICON_PLAY}<span>Nghe</span></button><button class="btn primary" id="gnext">${g.lives>0?"Tiếp tục →":"Xem kết quả"}</button></div>`;
+    fb.className="review no"; fb.innerHTML=reviewHTML(w,q.id,n===null?"Hết giờ! Đáp án đúng là:":"Chưa đúng. Đáp án đúng là:", g.lives>0?"Tiếp tục →":"Xem kết quả");
     box.querySelector(".hearts").innerHTML=[0,1,2].map(i=>HEART(i<g.lives)).join("");
-    $("#gsay").onclick=e=>speak(w.w,.9,e.currentTarget);
-    $("#gnext").onclick=()=>{ if(g.lives<=0){ g.phase="lose"; SFX.lose(); renderGame(); } else nextQ(); };
+    bindReview(w,()=>{ if(g.lives<=0){ g.phase="lose"; SFX.lose(); renderGame(); } else nextQ(); });
     speak(w.w);
   }
 }
