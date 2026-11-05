@@ -229,6 +229,52 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .g-btn:hover{filter:brightness(1.05)}
 .stars{display:flex;justify-content:center;gap:8px;margin:6px 0}.stars svg{width:44px;height:44px}
 @media (prefers-reduced-motion: reduce){.hero{transition:none}.hero.jump svg,.hero.hurt svg,.q.shake{animation:none}}
+
+/* game picker */
+.picker{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.pick{text-align:left;border-radius:18px;border:0;padding:20px;color:#fff;display:flex;gap:16px;align-items:center;min-height:120px;transition:transform .15s,box-shadow .15s}
+.pick:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.pick svg{width:72px;height:72px;flex:none}
+.pick b{display:block;font-size:19px;margin-bottom:4px}
+.pick span{font-size:13px;opacity:.9;line-height:1.45}
+.pick.night{background:linear-gradient(160deg,#141c33,#2b3d6e)}
+.pick.farm{background:linear-gradient(160deg,#2f8f5b,#5cbf7a)}
+.g-back{background:none;border:0;color:var(--accent);font-weight:500;padding:0;align-self:flex-start}
+/* egg hunt: meadow board, clouds hide eggs */
+.egg-wrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+.egg-side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.meadow{position:relative;border-radius:18px;padding:10px;background:#3f9a5e;box-shadow:inset 0 0 0 4px #2f7f4a}
+.board{position:relative;display:grid;aspect-ratio:var(--cols)/var(--rows);grid-template-columns:repeat(var(--cols),1fr);grid-template-rows:repeat(var(--rows),1fr);border-radius:10px;overflow:hidden}
+.cell{position:relative;background:#6cc47f}
+.cell.alt{background:#5fb572}
+.cell .cloud{position:absolute;inset:-16% -14% -8%;transition:opacity .35s,transform .35s;pointer-events:none}
+.cell.open .cloud{opacity:0;transform:scale(1.3) translateY(-10%)}
+.cell .shell{position:absolute;inset:28%;opacity:0;transition:opacity .3s}
+.cell.got .shell{opacity:.9}
+.chick{position:absolute;z-index:3;transition:left .26s ease,top .26s ease;pointer-events:none}
+.chick svg{width:100%;height:100%;filter:drop-shadow(0 3px 2px rgba(0,0,0,.25))}
+.chick.step svg{animation:waddle .26s}
+@keyframes waddle{50%{transform:translateY(-14%) rotate(-6deg)}}
+.arrow{position:absolute;z-index:4;display:grid;place-items:center;border:0;background:rgba(255,255,255,.88);border-radius:12px;margin:6%;width:88%;height:88%;padding:0;box-shadow:0 3px 0 rgba(0,0,0,.2);animation:pop .25s}
+.arrow:hover,.arrow:focus-visible{background:#fff;outline:3px solid #ffd84d}
+.arrow b{font-size:clamp(14px,3.4vw,22px);color:#1c2433;line-height:1}
+.arrow i{font-style:normal;font-size:clamp(11px,2.6vw,16px);color:#2c4fd6;line-height:1}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.popup{position:absolute;z-index:5;font-weight:800;color:#ffd84d;-webkit-text-stroke:1.5px #7a3d00;font-size:clamp(20px,5vw,30px);pointer-events:none;animation:rise 1.4s forwards;display:flex;flex-direction:column;align-items:center}
+.popup svg{width:clamp(30px,7vw,46px);height:auto}
+@keyframes rise{0%{transform:translateY(10%) scale(.5);opacity:0}20%{transform:none;opacity:1}75%{opacity:1}100%{transform:translateY(-70%);opacity:0}}
+.egg-hud{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.egg-hud div{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px 10px;text-align:center}
+.egg-hud small{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.egg-hud b{font-size:20px;font-variant-numeric:tabular-nums}
+.dice-box{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.die{width:84px;height:84px;border-radius:18px;background:#fff;box-shadow:inset 0 -5px 0 #d9dde8,0 4px 10px rgba(0,0,0,.18);display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:12px;border:2px solid #1c2433}
+.die i{width:15px;height:15px;border-radius:50%;background:#1c2433;place-self:center;visibility:hidden}
+.die.rolling{animation:roll .5s linear infinite}
+@keyframes roll{25%{transform:rotate(12deg) translateY(-6px)}75%{transform:rotate(-12deg)}}
+.dice-msg{font-size:15px;font-weight:500}
+@media (max-width:860px){.egg-wrap{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion: reduce){.chick,.cell .cloud{transition:none}.die.rolling,.popup,.arrow,.chick.step svg{animation:none}}
 </style>
 
 </head>
@@ -389,7 +435,7 @@ function loadLesson(lesson){
   $("#prompt").innerHTML=L.prompt||""; $("#prompt").hidden=!L.prompt;
   $("#cntList").textContent=items.length;
   renderPassage(); renderDetail(); renderList(); progress();
-  cardState=null; quizState=null; stopGame(); gameState=null;
+  cardState=null; quizState=null; stopGame(); gameState=null; eg=null; gameKind=null;
   if(activeTab==="cards") renderCards(); if(activeTab==="quiz") renderQuiz();
 }
 function saveKnown(){ store.set("hv-known-"+L.id,[...known]); progress(); }
@@ -560,7 +606,7 @@ function tone(seq){ try{ actx=actx||new (window.AudioContext||window.webkitAudio
     g.gain.setValueAtTime(.0001,t0+st); g.gain.exponentialRampToValueAtTime(.18,t0+st+.02); g.gain.exponentialRampToValueAtTime(.0001,t0+st+d);
     o.connect(g).connect(actx.destination); o.start(t0+st); o.stop(t0+st+d+.05); }); }catch(e){} }
 const SFX={ ok:()=>tone([[660,.15,0],[990,.22,.1]]), no:()=>tone([[180,.3,0,"square"]]), win:()=>tone([[523,.15,0],[659,.15,.12],[784,.15,.24],[1047,.4,.36]]), lose:()=>tone([[300,.25,0,"triangle"],[200,.4,.2,"triangle"]]) };
-function stopGame(){ if(gTimer){ clearInterval(gTimer); gTimer=null; } }
+function stopGame(){ if(gTimer){ clearInterval(gTimer); gTimer=null; } egToken++; }
 function makeQ(id){
   const kinds=["meaning","listen","gap"], kind=kinds[Math.random()*3|0];
   const others=shuffle(items.filter(w=>w.n!==id)).slice(0,3).map(w=>w.n);
@@ -584,14 +630,17 @@ function sceneHTML(){
 }
 function renderGame(){
   stopGame();
+  if(!gameKind) return renderPicker();
+  if(gameKind==="egg") return renderEgg();
   const box=$("#game"); const best=store.get("hv-best-"+L.id,0);
   if(!gameState){
     box.innerHTML=`<div class="scene"><div class="g-start"><div class="hero" style="position:relative;left:auto;margin:0 auto;width:64px;height:64px;bottom:auto">${FIREFLY}</div>
       <h2>Đường Ánh Sáng</h2><p>Giúp chú đom đóm vượt sông về ngọn hải đăng. Mỗi câu trả lời đúng, đom đóm nhảy sang một phiến đá.</p>
       <p>Trả lời sai hoặc hết ${Q_TIME} giây sẽ mất 1 tim. Hết 3 tim là thua. Trả lời nhanh và đúng liên tiếp để được nhiều điểm hơn.</p>
       ${best?`<div class="best">Điểm cao nhất của bạn: ${best}</div>`:""}
-      <button class="g-btn" id="gstart">Bắt đầu chơi</button></div></div>`;
+      <button class="g-btn" id="gstart">Bắt đầu chơi</button></div></div><button class="g-back" id="gpick">← Chọn trò chơi khác</button>`;
     $("#gstart").onclick=()=>{ tone([[440,.08,0]]); newGame(); };
+    $("#gpick").onclick=()=>{ gameKind=null; renderGame(); };
     return;
   }
   const g=gameState;
@@ -652,6 +701,145 @@ function answer(n){
   }
 }
 
+
+/* --- game picker --- */
+let gameKind=null;
+function renderPicker(){
+  $("#game").innerHTML=`<div class="picker">
+    <button class="pick farm" data-k="egg">${CHICK}<div><b>Gà Con Săn Trứng</b><span>Trả lời đúng để đổ xúc xắc, chọn hướng đi và tìm trứng vàng ẩn dưới mây.</span></div></button>
+    <button class="pick night" data-k="path">${FIREFLY}<div><b>Đường Ánh Sáng</b><span>Trả lời nhanh và đúng để đưa đom đóm về hải đăng. Có tim và đồng hồ.</span></div></button></div>`;
+  $("#game").querySelectorAll(".pick").forEach(b=>b.onclick=()=>{ gameKind=b.dataset.k; tone([[440,.08,0]]); renderGame(); });
+}
+
+/* --- game: Gà Con Săn Trứng --- */
+const EG_COLS=8, EG_ROWS=6, EG_EGGS=10, EG_TURNS=15;
+const DIRS=[[-1,-1,"↖"],[-1,0,"↑"],[-1,1,"↗"],[0,-1,"←"],[0,1,"→"],[1,-1,"↙"],[1,0,"↓"],[1,1,"↘"]];
+const PIPS={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+let eg=null, egToken=0;
+const CHICK='<svg viewBox="0 0 64 64"><path d="M26 9c2-5 7-6 8-2 2-4 8-3 7 2 3 0 4 4 1 6H25c-3-1-2-6 1-6z" fill="#ff5a4e"/><ellipse cx="32" cy="38" rx="22" ry="21" fill="#ffd23f"/><ellipse cx="32" cy="42" rx="14" ry="12" fill="#ffe680"/><path d="M11 36c-6 1-8 8-3 11 3-4 6-5 8-5z" fill="#f5b800"/><path d="M53 36c6 1 8 8 3 11-3-4-6-5-8-5z" fill="#f5b800"/><circle cx="24" cy="31" r="4" fill="#1c2433"/><circle cx="40" cy="31" r="4" fill="#1c2433"/><circle cx="25.3" cy="29.6" r="1.4" fill="#fff"/><circle cx="41.3" cy="29.6" r="1.4" fill="#fff"/><path d="M28 37h8l-4 6z" fill="#ff8a1f"/><circle cx="19" cy="38" r="3" fill="#ff9aa2" opacity=".7"/><circle cx="45" cy="38" r="3" fill="#ff9aa2" opacity=".7"/><path d="M25 58v4M39 58v4" stroke="#ff8a1f" stroke-width="3" stroke-linecap="round"/></svg>';
+const CLOUD='<svg viewBox="0 0 100 100" class="cloud"><g fill="#f4f1ff" stroke="#c9c0ef" stroke-width="3"><circle cx="32" cy="58" r="22"/><circle cx="68" cy="58" r="22"/><circle cx="50" cy="40" r="24"/><rect x="24" y="56" width="52" height="24" rx="12"/></g><circle cx="42" cy="36" r="6" fill="#fff" opacity=".9"/></svg>';
+const EGG_COL=["#ff7aa8","#5ab0ff","#a77bff","#ff9f43","#3ccf91"];
+const EGG=(c)=>`<svg viewBox="0 0 40 50"><path d="M20 2C9 2 3 20 3 31c0 10 8 17 17 17s17-7 17-17C37 20 31 2 20 2z" fill="${c}" stroke="#7a3d00" stroke-width="2"/><path d="M5 26c5 3 10-3 15 0s10-3 15 0" stroke="#fff" stroke-width="3.5" fill="none"/><circle cx="13" cy="37" r="2.5" fill="#fff"/><circle cx="27" cy="38" r="2.5" fill="#fff"/></svg>`;
+const SHELL='<svg viewBox="0 0 40 30"><path d="M3 12l6 5 5-7 6 8 6-8 5 7 6-5c0 9-8 16-17 16S3 21 3 12z" fill="#fff5d6" stroke="#c9a25c" stroke-width="2"/></svg>';
+const key=(r,c)=>r+"-"+c;
+function newEgg(){
+  const eggs=new Map(); const cells=[];
+  for(let r=0;r<EG_ROWS;r++) for(let c=0;c<EG_COLS;c++) if(!(r===2&&c===3)) cells.push(key(r,c));
+  shuffle(cells).slice(0,EG_EGGS).forEach((k,i)=>eggs.set(k,{pts:1+(Math.random()*10|0),col:EGG_COL[i%EGG_COL.length]}));
+  eg={phase:"question",pos:[2,3],open:new Set([key(2,3)]),eggs,got:new Set(),score:0,turn:0,roll:0,pool:shuffle(items.map(w=>w.n)),pi:0,q:null,msg:""};
+  egNextQ(true);
+}
+function egNextQ(first){
+  if(eg.turn>=EG_TURNS || eg.got.size>=EG_EGGS){ eg.phase="end"; SFX.win(); return renderEgg(); }
+  if(eg.pi>=eg.pool.length){ eg.pool=shuffle(eg.pool); eg.pi=0; }
+  eg.q=makeQ(eg.pool[eg.pi++]); eg.turn++; eg.phase="question"; renderEgg();
+  if(!first) $("#egSide").scrollIntoView({block:"nearest",behavior:"smooth"});
+}
+function boardHTML(){
+  let cells="";
+  for(let r=0;r<EG_ROWS;r++) for(let c=0;c<EG_COLS;c++){ const k=key(r,c);
+    cells+=`<div class="cell ${(r+c)%2?"alt":""} ${eg.open.has(k)?"open":""} ${eg.got.has(k)?"got":""}" data-k="${k}"><div class="shell">${SHELL}</div>${eg.phase==="end"&&eg.eggs.has(k)&&!eg.got.has(k)?`<div class="shell" style="opacity:.95">${EGG(eg.eggs.get(k).col)}</div>`:""}${CLOUD}</div>`; }
+  const [r,c]=eg.pos;
+  return `<div class="meadow"><div class="board" id="egBoard" style="--cols:${EG_COLS};--rows:${EG_ROWS}">${cells}
+    <div class="chick" id="chick" style="${cellPos(r,c)}">${CHICK}</div></div></div>`;
+}
+const cellPos=(r,c)=>`left:${c/EG_COLS*100}%;top:${r/EG_ROWS*100}%;width:${100/EG_COLS}%;height:${100/EG_ROWS}%`;
+function dieHTML(n){ return `<div class="die" id="die">${[...Array(9)].map((_,i)=>`<i style="visibility:${PIPS[n].includes(i)?"visible":"hidden"}"></i>`).join("")}</div>`; }
+function setDie(n){ const d=$("#die"); if(d) d.querySelectorAll("i").forEach((p,i)=>p.style.visibility=PIPS[n].includes(i)?"visible":"hidden"); }
+function hudHTML(){ return `<div class="egg-hud"><div><small>Điểm</small><b>${eg.score}</b></div><div><small>Trứng</small><b>${eg.got.size}/${EG_EGGS}</b></div><div><small>Lượt</small><b>${Math.min(eg.turn,EG_TURNS)}/${EG_TURNS}</b></div></div>`; }
+function renderEgg(){
+  const box=$("#game"), best=store.get("hv-egg-best-"+L.id,0);
+  if(!eg){
+    box.innerHTML=`<div class="dice-box" style="padding:26px 18px">
+      <div style="width:90px;height:90px">${CHICK}</div><h2 style="margin:0">Gà Con Săn Trứng</h2>
+      <p style="margin:0;color:var(--muted);max-width:48ch">Có ${EG_EGGS} quả trứng giấu dưới những đám mây, mỗi quả chứa từ 1 đến 10 điểm. Trả lời đúng để được đổ xúc xắc. Xúc xắc ra bao nhiêu, gà đi bấy nhiêu bước theo hướng bạn chọn (1 đến 8). Đi qua mây nào, mây đó mở ra. Bạn có ${EG_TURNS} lượt hỏi, cố gắng nhặt được nhiều điểm nhất nhé!</p>
+      ${best?`<div style="color:var(--accent);font-weight:600">Điểm cao nhất của bạn: ${best}</div>`:""}
+      <button class="btn primary" id="egStart" style="font-size:16px;padding:12px 26px">Bắt đầu chơi</button></div>
+      <button class="g-back" id="gpick">← Chọn trò chơi khác</button>`;
+    $("#egStart").onclick=()=>{ tone([[440,.08,0]]); newEgg(); $("#game").scrollIntoView({block:"start",behavior:"smooth"}); };
+    $("#gpick").onclick=()=>{ gameKind=null; renderGame(); };
+    return;
+  }
+  if(eg.phase==="end"){
+    const isBest=eg.score>best; if(isBest) store.set("hv-egg-best-"+L.id,eg.score);
+    eggsRevealAll();
+    box.innerHTML=`<div class="egg-wrap"><div>${boardHTML()}</div><div class="egg-side">${hudHTML()}
+      <div class="done-box"><h2>${eg.got.size>=EG_EGGS?"Nhặt hết trứng rồi!":"Hết lượt rồi!"}</h2><div class="score">${eg.score}</div>
+      <p>điểm từ ${eg.got.size} quả trứng${isBest?" · Kỷ lục mới!":best?` · Kỷ lục: ${best}`:""}</p>
+      <div class="btnrow" style="justify-content:center;margin-top:12px"><button class="btn primary" id="egAgain">Chơi lại</button><button class="btn" id="gpick">Trò chơi khác</button></div></div></div></div>`;
+    $("#egAgain").onclick=newEgg; $("#gpick").onclick=()=>{ gameKind=null; eg=null; renderGame(); };
+    return;
+  }
+  let side="";
+  if(eg.phase==="question"){
+    const q=eg.q, w=L.words[q.id]; let head,label;
+    if(q.kind==="meaning"){ label="Chọn từ đúng với nghĩa"; head=`<div class="q-text">${esc(w.vi)}</div>`; }
+    else if(q.kind==="listen"){ label="Nghe và chọn nghĩa đúng"; head=`<div class="q-text"><button class="btn primary" id="gplay">${ICON_PLAY}<span>Nghe lại</span></button></div>`; }
+    else { label="Chọn từ điền vào chỗ trống"; head=`<div class="q-text sent">${exampleHTML(q.id,true)}</div>`; }
+    const optText=n=> q.kind==="listen"?L.words[n].vi : q.kind==="gap"?surface(n):L.words[n].w;
+    side=`<div class="q" id="gq"><div class="q-kind">Lượt ${eg.turn} · ${label}</div>${head}
+      <div class="opts">${q.opts.map(n=>`<button class="opt" data-n="${n}">${esc(optText(n))}</button>`).join("")}</div><div id="gfb"></div></div>`;
+  } else {
+    side=`<div class="dice-box" id="diceBox">${dieHTML(eg.roll||1)}<div class="dice-msg" id="diceMsg">${eg.msg}</div><div id="diceAct"></div></div>`;
+  }
+  box.innerHTML=`<div class="egg-wrap"><div>${boardHTML()}</div><div class="egg-side" id="egSide">${hudHTML()}${side}</div></div>`;
+  if(eg.phase==="question"){
+    const q=eg.q, w=L.words[q.id];
+    if(q.kind==="listen"){ $("#gplay").onclick=e=>speak(w.w,.85,e.currentTarget); speak(w.w,.85); }
+    box.querySelectorAll(".opt").forEach(b=>b.onclick=()=>egAnswer(+b.dataset.n));
+  } else if(eg.phase==="roll"){
+    $("#diceAct").innerHTML=`<button class="btn primary" id="rollBtn" style="font-size:16px;padding:12px 24px">Đổ xúc xắc</button>`;
+    $("#rollBtn").onclick=egRoll; $("#rollBtn").focus({preventScroll:true});
+  } else if(eg.phase==="dir"){ showArrows(); }
+}
+function egAnswer(n){
+  if(eg.phase!=="question"||eg.answered) return; eg.answered=true;
+  const q=eg.q, w=L.words[q.id], ok=n===q.id, box=$("#game");
+  box.querySelectorAll(".opt").forEach(x=>{ x.disabled=true; if(+x.dataset.n===q.id) x.classList.add("right"); if(+x.dataset.n===n&&!ok) x.classList.add("wrong"); });
+  const fb=$("#gfb");
+  if(ok){ SFX.ok(); speak(w.w); fb.className="review ok"; fb.innerHTML=reviewHTML(w,q.id,"Chính xác! Bạn được đổ xúc xắc","Đổ xúc xắc →");
+    bindReview(w,()=>{ eg.answered=false; eg.phase="roll"; eg.msg="Bấm để đổ xúc xắc"; renderEgg(); }); }
+  else { SFX.no(); speak(w.w); $("#gq").classList.add("shake"); fb.className="review no"; fb.innerHTML=reviewHTML(w,q.id,"Chưa đúng, lượt này gà đứng yên. Đáp án đúng là:","Câu tiếp theo →");
+    bindReview(w,()=>{ eg.answered=false; egNextQ(); }); }
+}
+function egRoll(){
+  const t=egToken; $("#rollBtn").remove(); const d=$("#die"); d.classList.add("rolling"); $("#diceMsg").textContent="Đang đổ...";
+  let i=0; const final=1+(Math.random()*6|0);
+  const spin=setInterval(()=>{ if(t!==egToken) return clearInterval(spin); setDie(1+(Math.random()*6|0)); tone([[300+Math.random()*200,.04,0,"triangle"]]);
+    if(++i>=12){ clearInterval(spin); d.classList.remove("rolling"); setDie(final); eg.roll=final; tone([[700,.2,0]]);
+      eg.phase="dir"; eg.msg=`Được <b>${final}</b> bước! Chọn hướng đi (bấm số 1 đến 8 trên bàn chơi).`; $("#diceMsg").innerHTML=eg.msg; showArrows(); } },70);
+}
+function showArrows(){
+  const b=$("#egBoard"); b.querySelectorAll(".arrow").forEach(a=>a.remove());
+  const [r,c]=eg.pos;
+  DIRS.forEach(([dr,dc,ch],i)=>{ const nr=r+dr, nc=c+dc; if(nr<0||nc<0||nr>=EG_ROWS||nc>=EG_COLS) return;
+    const a=document.createElement("button"); a.className="arrow"; a.style.cssText=cellPos(nr,nc); a.setAttribute("aria-label","Hướng "+(i+1));
+    a.innerHTML=`<b>${i+1}</b><i>${ch}</i>`; a.onclick=()=>egMove(i); b.appendChild(a); });
+  document.onkeydown=e=>{ if(eg&&eg.phase==="dir"&&/^[1-8]$/.test(e.key)){ const i=+e.key-1, [dr,dc]=DIRS[i]; const nr=eg.pos[0]+dr,nc=eg.pos[1]+dc; if(nr>=0&&nc>=0&&nr<EG_ROWS&&nc<EG_COLS) egMove(i); } };
+}
+function egMove(i){
+  if(eg.phase!=="dir") return; eg.phase="moving"; document.onkeydown=null;
+  $("#egBoard").querySelectorAll(".arrow").forEach(a=>a.remove());
+  const [dr,dc]=DIRS[i]; let left=eg.roll, gained=0, t=egToken; const ch=$("#chick");
+  $("#diceMsg").innerHTML=`Gà đang đi ${eg.roll} bước về hướng ${i+1}...`;
+  const step=()=>{ if(t!==egToken) return;
+    const nr=eg.pos[0]+dr, nc=eg.pos[1]+dc;
+    if(left<=0||nr<0||nc<0||nr>=EG_ROWS||nc>=EG_COLS) return done();
+    eg.pos=[nr,nc]; left--; ch.style.cssText=cellPos(nr,nc); ch.classList.remove("step"); void ch.offsetWidth; ch.classList.add("step"); tone([[520,.05,0,"triangle"]]);
+    const k=key(nr,nc), cell=$("#egBoard").querySelector(`[data-k="${k}"]`); eg.open.add(k); cell.classList.add("open");
+    if(eg.eggs.has(k)&&!eg.got.has(k)){ const e=eg.eggs.get(k); eg.got.add(k); eg.score+=e.pts; gained+=e.pts;
+      const pop=document.createElement("div"); pop.className="popup"; pop.style.cssText=cellPos(nr,nc); pop.innerHTML=`${EGG(e.col)}<span>+${e.pts}</span>`;
+      $("#egBoard").appendChild(pop); setTimeout(()=>{ pop.remove(); cell.classList.add("got"); },1400);
+      SFX.win(); $("#egSide").querySelector(".egg-hud").outerHTML=hudHTML(); }
+    setTimeout(step, eg.eggs.has(k)&&gained? 700:300);
+  };
+  const done=()=>{ const hit=left>0; 
+    $("#diceMsg").innerHTML=(gained?`Tìm được trứng! <b>+${gained} điểm</b>`:"Không có trứng trên đường này. Lần sau may mắn hơn nhé!")+(hit?"<br><small>Gà đã chạm hàng rào nên dừng lại.</small>":"");
+    $("#diceAct").innerHTML=`<button class="btn primary" id="egCont">Câu tiếp theo →</button>`; $("#egCont").onclick=()=>egNextQ(); $("#egCont").focus({preventScroll:true}); };
+  setTimeout(step,150);
+}
+function eggsRevealAll(){ eg.eggs.forEach((v,k)=>eg.open.add(k)); }
+
 /* --- tabs + routing --- */
 let activeTab="read";
 document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
@@ -660,7 +848,7 @@ function showTab(t){
   document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
   ["read","list","cards","quiz","game"].forEach(x=>$("#tab-"+x).hidden=x!==t);
   if(synth) synth.cancel();
-  stopGame(); if(t==="cards") renderCards(); if(t==="quiz") renderQuiz(); if(t==="game"){ gameState=null; renderGame(); }
+  stopGame(); if(t==="cards") renderCards(); if(t==="quiz") renderQuiz(); if(t==="game"){ gameState=null; eg=null; gameKind=null; renderGame(); }
 }
 const SKILLS={
   listening:{name:"Listening",desc:"Từ vựng từ các bài nghe: nghe lại từng từ, hiểu nghĩa và nhận ra khi nghe."},
@@ -701,7 +889,7 @@ function route(){
 }
 window.addEventListener("hashchange",route);
 setAccent(accent); route();
-const APP_VERSION="5";
+const APP_VERSION="6";
 if("serviceWorker" in navigator){
   let reloaded=false;
   navigator.serviceWorker.addEventListener("controllerchange",()=>{ if(reloaded) return; reloaded=true; location.reload(); });
