@@ -189,6 +189,38 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .soon strong{display:block;color:var(--ink);font-size:18px;margin:10px 0 4px}
 .back{display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--accent);font-weight:500;padding:0;margin-bottom:14px}
 @media (prefers-reduced-motion: reduce){.lcard{transition:none}.lcard:hover{transform:none}}
+
+/* game: night path of stepping stones, a firefly hops forward on each right answer */
+.game{scroll-margin-top:96px;max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.scene{position:relative;border-radius:18px;padding:16px 16px 14px;overflow:hidden;color:#fff;
+  background:radial-gradient(1.5px 1.5px at 12% 22%,#fff8 50%,transparent 51%),radial-gradient(1.5px 1.5px at 38% 12%,#fff6 50%,transparent 51%),radial-gradient(2px 2px at 66% 28%,#fff7 50%,transparent 51%),radial-gradient(1.5px 1.5px at 85% 15%,#fff5 50%,transparent 51%),radial-gradient(1px 1px at 52% 40%,#fff6 50%,transparent 51%),linear-gradient(180deg,#141c33,#24315a 70%,#2b3d6e)}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:600;font-size:14px;flex-wrap:wrap}
+.hearts{display:flex;gap:3px}.hearts svg{width:22px;height:22px}
+.hud .pts{font-variant-numeric:tabular-nums;color:var(--glow)}
+.combo{font-size:12px;background:var(--glow);color:#141c33;border-radius:99px;padding:2px 8px}
+.track{position:relative;height:96px;margin:6px 6px 0}
+.water{position:absolute;left:-22px;right:-22px;bottom:0;height:26px;background:linear-gradient(180deg,#2f4a8a,#1d2f5c);opacity:.8}
+.stone{position:absolute;bottom:14px;width:26px;height:11px;border-radius:50%;background:#4a5b8f;transform:translateX(-50%);transition:background .3s,box-shadow .3s}
+.stone.lit{background:var(--glow);box-shadow:0 0 14px var(--glow)}
+.goal{position:absolute;bottom:14px;right:-8px;width:34px;height:64px}
+.hero{position:absolute;bottom:24px;width:36px;height:36px;margin-left:-18px;transition:left .55s cubic-bezier(.3,1.4,.5,1)}
+.hero svg{width:100%;height:100%;filter:drop-shadow(0 0 8px #ffd84d)}
+.hero.jump svg{animation:hop .55s ease-out}
+.hero.hurt svg{animation:hurt .45s}
+@keyframes hop{40%{transform:translateY(-34px) scale(1.08)}100%{transform:none}}
+@keyframes hurt{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.timer{height:7px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden;margin-top:12px}
+.timer i{display:block;height:100%;width:100%;background:var(--glow);border-radius:99px}
+.timer.low i{background:#ff7a6b}
+.q.shake{animation:hurt .45s}
+.g-start{text-align:center;padding:28px 18px 24px}
+.g-start h2{font-size:clamp(24px,5vw,32px);margin:6px 0 8px;color:#fff}
+.g-start p{color:#c9d2ea;max-width:46ch;margin:0 auto 6px}
+.g-start .best{font-size:13px;color:var(--glow);margin-top:10px}
+.g-btn{background:var(--glow);color:#141c33;border:0;border-radius:12px;padding:12px 26px;font-weight:700;font-size:16px;margin-top:16px}
+.g-btn:hover{filter:brightness(1.05)}
+.stars{display:flex;justify-content:center;gap:8px;margin:6px 0}.stars svg{width:44px;height:44px}
+@media (prefers-reduced-motion: reduce){.hero{transition:none}.hero.jump svg,.hero.hurt svg,.q.shake{animation:none}}
 </style>
 
 </head>
@@ -224,6 +256,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <button role="tab" data-tab="list" aria-selected="false">Danh sách từ <span class="count" id="cntList">0</span></button>
     <button role="tab" data-tab="cards" aria-selected="false">Flashcard</button>
     <button role="tab" data-tab="quiz" aria-selected="false">Kiểm tra</button>
+    <button role="tab" data-tab="game" aria-selected="false">Trò chơi</button>
   </nav>
 
   <section id="tab-read">
@@ -246,6 +279,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <section id="tab-cards" hidden><div class="fc" id="cards"></div></section>
 
   <section id="tab-quiz" hidden><div class="quiz" id="quiz"></div></section>
+  <section id="tab-game" hidden><div class="game" id="game"></div></section>
  </section>
 </div>
 
@@ -347,7 +381,7 @@ function loadLesson(lesson){
   $("#prompt").innerHTML=L.prompt||""; $("#prompt").hidden=!L.prompt;
   $("#cntList").textContent=items.length;
   renderPassage(); renderDetail(); renderList(); progress();
-  cardState=null; quizState=null;
+  cardState=null; quizState=null; stopGame(); gameState=null;
   if(activeTab==="cards") renderCards(); if(activeTab==="quiz") renderQuiz();
 }
 function saveKnown(){ store.set("hv-known-"+L.id,[...known]); progress(); }
@@ -505,15 +539,111 @@ function renderQuiz(){
   });
 }
 
+
+/* --- game: Đường Ánh Sáng --- */
+let gameState=null, gTimer=null, actx=null;
+const Q_TIME=20;
+const HEART=(on)=>`<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.5-9.3C1 8 3.3 4.5 7 4.5c2 0 3.5 1.1 5 3 1.5-1.9 3-3 5-3 3.7 0 6 3.5 4.5 7.2C19.5 16.4 12 21 12 21z" fill="${on?"#ff6b6b":"none"}" stroke="${on?"#ff6b6b":"#6b78a3"}" stroke-width="2"/></svg>`;
+const STAR=(on)=>`<svg viewBox="0 0 24 24"><path d="m12 2.5 2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill="${on?"#ffd84d":"none"}" stroke="${on?"#ffd84d":"#6b78a3"}" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+const FIREFLY='<svg viewBox="0 0 40 40"><ellipse cx="11" cy="13" rx="8" ry="5" fill="#cfe3ff" opacity=".75" transform="rotate(-30 11 13)"/><ellipse cx="29" cy="13" rx="8" ry="5" fill="#cfe3ff" opacity=".75" transform="rotate(30 29 13)"/><circle cx="20" cy="23" r="12" fill="#ffd84d"/><circle cx="16" cy="21" r="2.2" fill="#141c33"/><circle cx="24" cy="21" r="2.2" fill="#141c33"/><path d="M16 27q4 3 8 0" stroke="#141c33" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>';
+const LIGHTHOUSE='<svg viewBox="0 0 34 64"><path d="M10 62 13 20h8l3 42z" fill="#e8ecf7"/><path d="M11.3 44h11.4l.6 8H10.7zM12.4 30h9.2l.5 6h-10.2z" fill="#ff7a6b"/><rect x="11" y="12" width="12" height="8" rx="2" fill="#ffd84d" class="lamp"/><path d="M9 12h16l-8-8z" fill="#ff7a6b"/></svg>';
+function tone(seq){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const t0=actx.currentTime;
+  seq.forEach(([f,d,st,type])=>{ const o=actx.createOscillator(), g=actx.createGain(); o.type=type||"sine"; o.frequency.value=f;
+    g.gain.setValueAtTime(.0001,t0+st); g.gain.exponentialRampToValueAtTime(.18,t0+st+.02); g.gain.exponentialRampToValueAtTime(.0001,t0+st+d);
+    o.connect(g).connect(actx.destination); o.start(t0+st); o.stop(t0+st+d+.05); }); }catch(e){} }
+const SFX={ ok:()=>tone([[660,.15,0],[990,.22,.1]]), no:()=>tone([[180,.3,0,"square"]]), win:()=>tone([[523,.15,0],[659,.15,.12],[784,.15,.24],[1047,.4,.36]]), lose:()=>tone([[300,.25,0,"triangle"],[200,.4,.2,"triangle"]]) };
+function stopGame(){ if(gTimer){ clearInterval(gTimer); gTimer=null; } }
+function makeQ(id){
+  const kinds=["meaning","listen","gap"], kind=kinds[Math.random()*3|0];
+  const others=shuffle(items.filter(w=>w.n!==id)).slice(0,3).map(w=>w.n);
+  return {id,kind,opts:shuffle([id,...others])};
+}
+function newGame(){
+  const steps=Math.min(10,items.length);
+  gameState={phase:"play",steps,pos:0,lives:3,score:0,streak:0,pool:shuffle(items.map(w=>w.n)),pi:0,q:null,answered:false};
+  nextQ();
+  $("#game").scrollIntoView({block:"start",behavior:"smooth"});
+}
+function nextQ(){ const g=gameState; if(g.pi>=g.pool.length){ g.pool=shuffle(g.pool); g.pi=0; } g.q=makeQ(g.pool[g.pi++]); g.answered=false; g.t0=Date.now(); renderGame(); }
+function sceneHTML(){
+  const g=gameState, n=g.steps, x=i=>`calc(${(i/(n))*100}% * .92)`;
+  let stones=""; for(let i=0;i<n;i++) stones+=`<span class="stone ${i<=g.pos?"lit":""}" style="left:${x(i)}"></span>`;
+  return `<div class="scene"><div class="hud"><div class="hearts" aria-label="Còn ${g.lives} tim">${[0,1,2].map(i=>HEART(i<g.lives)).join("")}</div>
+    <span>Bước ${Math.min(g.pos,n)}/${n} ${g.streak>=2?`<span class="combo">Chuỗi đúng x${g.streak}</span>`:""}</span><span class="pts">${g.score} điểm</span></div>
+    <div class="track"><div class="water"></div>${stones}<div class="goal">${LIGHTHOUSE}</div>
+    <div class="hero" id="hero" style="left:${g.pos>=n?"calc(100% - 4px)":x(g.pos)}">${FIREFLY}</div></div>
+    <div class="timer" id="gtimer"><i id="gbar"></i></div></div>`;
+}
+function renderGame(){
+  stopGame();
+  const box=$("#game"); const best=store.get("hv-best-"+L.id,0);
+  if(!gameState){
+    box.innerHTML=`<div class="scene"><div class="g-start"><div class="hero" style="position:relative;left:auto;margin:0 auto;width:64px;height:64px;bottom:auto">${FIREFLY}</div>
+      <h2>Đường Ánh Sáng</h2><p>Giúp chú đom đóm vượt sông về ngọn hải đăng. Mỗi câu trả lời đúng, đom đóm nhảy sang một phiến đá.</p>
+      <p>Trả lời sai hoặc hết ${Q_TIME} giây sẽ mất 1 tim. Hết 3 tim là thua. Trả lời nhanh và đúng liên tiếp để được nhiều điểm hơn.</p>
+      ${best?`<div class="best">Điểm cao nhất của bạn: ${best}</div>`:""}
+      <button class="g-btn" id="gstart">Bắt đầu chơi</button></div></div>`;
+    $("#gstart").onclick=()=>{ tone([[440,.08,0]]); newGame(); };
+    return;
+  }
+  const g=gameState;
+  if(g.phase==="win"||g.phase==="lose"){
+    const win=g.phase==="win"; const isBest=g.score>best; if(isBest) store.set("hv-best-"+L.id,g.score);
+    box.innerHTML=sceneHTML().replace('<div class="timer" id="gtimer"><i id="gbar"></i></div>','')+`
+      <div class="done-box"><h2>${win?"Về đích rồi!":"Hết tim mất rồi!"}</h2>
+      ${win?`<div class="stars">${[0,1,2].map(i=>STAR(i<g.lives)).join("")}</div>`:""}
+      <div class="score">${g.score}</div><p>điểm${isBest?" · Kỷ lục mới!":best?` · Kỷ lục: ${best}`:""}</p>
+      <p style="color:var(--muted)">${win?(g.lives===3?"Không sai câu nào. Xuất sắc!":"Thử lại để được đủ 3 sao nhé."):"Ôn lại Flashcard rồi chơi lại nhé, bạn sẽ làm được!"}</p>
+      <div class="btnrow" style="justify-content:center;margin-top:14px"><button class="btn primary" id="gagain">Chơi lại</button><button class="btn" id="gcards">Ôn Flashcard</button></div></div>`;
+    $("#gagain").onclick=newGame; $("#gcards").onclick=()=>showTab("cards");
+    return;
+  }
+  const q=g.q, w=L.words[q.id];
+  let head,label;
+  if(q.kind==="meaning"){ label="Chọn từ đúng với nghĩa"; head=`<div class="q-text">${esc(w.vi)}</div>`; }
+  else if(q.kind==="listen"){ label="Nghe và chọn nghĩa đúng"; head=`<div class="q-text"><button class="btn primary" id="gplay">${ICON_PLAY}<span>Nghe lại</span></button></div>`; }
+  else { label="Chọn từ điền vào chỗ trống"; head=`<div class="q-text sent">${exampleHTML(q.id,true)}</div>`; }
+  const optText=n=> q.kind==="listen"?L.words[n].vi : q.kind==="gap"?surface(n):L.words[n].w;
+  box.innerHTML=sceneHTML()+`<div class="q" id="gq"><div class="q-kind">${label}</div>${head}
+    <div class="opts">${q.opts.map(n=>`<button class="opt" data-n="${n}">${esc(optText(n))}</button>`).join("")}</div><div class="fb" id="gfb"></div></div>`;
+  if(q.kind==="listen"){ $("#gplay").onclick=e=>speak(w.w,.85,e.currentTarget); speak(w.w,.85); }
+  box.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(+b.dataset.n));
+  gTimer=setInterval(()=>{ const left=Q_TIME-(Date.now()-g.t0)/1000; const bar=$("#gbar"); if(!bar) return stopGame();
+    bar.style.width=Math.max(0,left/Q_TIME*100)+"%"; $("#gtimer").classList.toggle("low",left<6); if(left<=0) answer(null); },100);
+}
+function answer(n){
+  const g=gameState; if(!g||g.answered) return; g.answered=true; stopGame();
+  const q=g.q, w=L.words[q.id], ok=n===q.id, box=$("#game");
+  box.querySelectorAll(".opt").forEach(x=>{ x.disabled=true; if(+x.dataset.n===q.id) x.classList.add("right"); if(n!==null&&+x.dataset.n===n&&!ok) x.classList.add("wrong"); });
+  const fb=$("#gfb"), hero=$("#hero");
+  if(ok){
+    const left=Math.max(0,Q_TIME-(Date.now()-g.t0)/1000);
+    g.streak++; const pts=100+Math.round(left*5)+(g.streak>=2?g.streak*20:0); g.score+=pts; g.pos++;
+    SFX.ok(); speak(w.w);
+    fb.className="fb ok"; fb.innerHTML=`Chính xác! +${pts} điểm · <b>${esc(w.w)}</b> = ${esc(w.vi)}`;
+    const n2=g.steps; hero.classList.add("jump"); hero.style.left=g.pos>=n2?"calc(100% - 4px)":`calc(${(g.pos/n2)*100}% * .92)`;
+    box.querySelectorAll(".stone")[g.pos]?.classList.add("lit");
+    setTimeout(()=>{ if(gameState!==g) return; if(g.pos>=g.steps){ g.phase="win"; SFX.win(); renderGame(); } else nextQ(); },1300);
+  } else {
+    g.streak=0; g.lives--; SFX.no(); hero.classList.add("hurt"); $("#gq").classList.add("shake");
+    fb.className="fb no"; fb.innerHTML=(n===null?"Hết giờ! ":"Chưa đúng. ")+`Đáp án: <b>${esc(w.w)}</b> <span class="ipa">${esc(w.ipa)}</span> = ${esc(w.vi)}
+      <div class="btnrow" style="margin-top:12px"><button class="btn" id="gsay">${ICON_PLAY}<span>Nghe</span></button><button class="btn primary" id="gnext">${g.lives>0?"Tiếp tục →":"Xem kết quả"}</button></div>`;
+    box.querySelector(".hearts").innerHTML=[0,1,2].map(i=>HEART(i<g.lives)).join("");
+    $("#gsay").onclick=e=>speak(w.w,.9,e.currentTarget);
+    $("#gnext").onclick=()=>{ if(g.lives<=0){ g.phase="lose"; SFX.lose(); renderGame(); } else nextQ(); };
+    speak(w.w);
+  }
+}
+
 /* --- tabs + routing --- */
 let activeTab="read";
 document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 function showTab(t){
   activeTab=t;
   document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
-  ["read","list","cards","quiz"].forEach(x=>$("#tab-"+x).hidden=x!==t);
+  ["read","list","cards","quiz","game"].forEach(x=>$("#tab-"+x).hidden=x!==t);
   if(synth) synth.cancel();
-  if(t==="cards") renderCards(); if(t==="quiz") renderQuiz();
+  stopGame(); if(t==="cards") renderCards(); if(t==="quiz") renderQuiz(); if(t==="game"){ gameState=null; renderGame(); }
 }
 const SKILLS={
   listening:{name:"Listening",desc:"Từ vựng từ các bài nghe: nghe lại từng từ, hiểu nghĩa và nhận ra khi nghe."},
@@ -548,6 +678,7 @@ function route(){
   const l=LESSONS.find(x=>x.id===id);
   if(l){ setSkill(l.skill); $("#backSkill").textContent=SKILLS[l.skill].name; $("#home").hidden=true; $("#lessonView").hidden=false;
     if(L!==l) loadLesson(l); window.scrollTo(0,0); return; }
+  stopGame();
   const k = SKILLS[id] ? id : (LESSONS[0]?.skill || "listening");
   showHome(k);
 }
