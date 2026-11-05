@@ -303,11 +303,28 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .rk .tt{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right}.rk .tt small{display:block;font-size:11px;color:var(--muted);font-weight:500}
 .rk.me{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
 .rules{max-width:720px;margin-top:18px;font-size:13px;color:var(--muted)}
+
+/* mini leaderboard on game screens */
+.mini-rank{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px 16px;text-align:left;margin-top:14px}
+.mini-rank:empty{display:none}
+.mr-h{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.mr-h b{font-size:15px;display:flex;align-items:center;gap:6px}.mr-h b svg{width:18px;height:18px;color:#e0a800}
+.mr-h button{background:none;border:0;color:var(--accent);font-size:13px;font-weight:500;padding:0}
+.mr-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px 8px;border-radius:10px;font-size:14px}
+.mr-row .no{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--bg)}
+.mr-row.top1 .no{background:#ffd84d;color:#141c33}.mr-row.top2 .no{background:#d9dee8;color:#141c33}.mr-row.top3 .no{background:#f0b884;color:#141c33}
+.mr-row .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mr-row .tt{font-weight:700;font-variant-numeric:tabular-nums}
+.mr-row.me{background:var(--accent-soft)}.mr-row.me .nm{font-weight:600}
+.mr-gap{text-align:center;color:var(--muted);font-size:12px;line-height:1}
+.mr-note{font-size:12px;color:var(--muted);margin-top:6px}
+.plus{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;color:var(--good);animation:pop .4s}
+.who .tot{color:var(--glow);font-weight:600}
 </style>
 
 </head>
 <body>
-<header class="brand"><div class="brand-in"><a class="logo" href="#"><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#2c4fd6"/><rect x="96" y="292" width="320" height="64" rx="12" fill="#ffd84d"/><text x="256" y="262" text-anchor="middle" font-family="Lexend,Arial,sans-serif" font-weight="700" font-size="210" fill="#fff">Aa</text><text x="256" y="340" text-anchor="middle" font-family="Lexend,Arial,sans-serif" font-weight="700" font-size="44" fill="#1c2433">WordGlow</text></svg><div><div class="wordmark">Word<span>Glow</span></div><div class="tagline">Học từ vựng tiếng Anh qua bài mẫu: nghe, hiểu và nhớ lâu</div><div class="tagline" id="appVer" style="font-size:11px;margin-top:4px;opacity:.7"></div></div></a><div class="brand-actions"><button class="trophy" id="rankBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><span>Bảng xếp hạng</span></button><div class="who" id="who" hidden><span>Xin chào, <b id="whoName"></b></span><button id="whoEdit">Đổi tên</button></div></div></div></header>
+<header class="brand"><div class="brand-in"><a class="logo" href="#"><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#2c4fd6"/><rect x="96" y="292" width="320" height="64" rx="12" fill="#ffd84d"/><text x="256" y="262" text-anchor="middle" font-family="Lexend,Arial,sans-serif" font-weight="700" font-size="210" fill="#fff">Aa</text><text x="256" y="340" text-anchor="middle" font-family="Lexend,Arial,sans-serif" font-weight="700" font-size="44" fill="#1c2433">WordGlow</text></svg><div><div class="wordmark">Word<span>Glow</span></div><div class="tagline">Học từ vựng tiếng Anh qua bài mẫu: nghe, hiểu và nhớ lâu</div><div class="tagline" id="appVer" style="font-size:11px;margin-top:4px;opacity:.7"></div></div></a><div class="brand-actions"><button class="trophy" id="rankBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><span>Bảng xếp hạng</span></button><div class="who" id="who" hidden><span>Xin chào, <b id="whoName"></b> · <span class="tot" id="whoTot">0 điểm</span></span><button id="whoEdit">Đổi tên</button></div></div></div></header>
 <div class="modal" id="nameModal" hidden><form class="modal-in" id="nameForm"><h2>Chào bạn! Bạn tên là gì?</h2><p>Tên sẽ hiện trên kết quả bài kiểm tra và trò chơi để bạn chụp màn hình gửi cô. Tên chỉ lưu trên máy này.</p><input id="nameInput" maxlength="40" placeholder="Ví dụ: Minh Anh - lớp 7A" autocomplete="off" required><button class="btn primary" style="justify-content:center;font-size:16px;padding:12px">Bắt đầu học</button></form></div>
 <nav class="skills" aria-label="Kỹ năng"><div class="skills-in"><button class="skill" data-skill="listening"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-6h3zM3 19a2 2 0 0 0 2 2h1v-6H3z"/></svg><span>Listening</span></button><button class="skill" data-skill="speaking"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10a7 7 0 0 1-14 0M12 17v5M8 22h8"/></svg><span>Speaking</span></button><button class="skill" data-skill="reading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2zM22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><span>Reading</span></button><button class="skill" data-skill="writing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>Writing</span></button></div></nav>
 <div class="wrap">
@@ -740,7 +757,8 @@ function answer(n){
 /* --- game picker --- */
 let gameKind=null;
 function renderPicker(){
-  $("#game").innerHTML=`<div class="picker">
+  setTimeout(()=>fillMini(),0);
+  $("#game").innerHTML=`<div class="mini-rank" data-mini style="margin:0 0 14px"></div><div class="picker">
     <button class="pick farm" data-k="egg">${CHICK}<div><b>Gà Con Săn Trứng</b><span>Trả lời đúng để đổ xúc xắc, chọn hướng đi và tìm trứng vàng ẩn dưới mây.</span></div></button>
     <button class="pick night" data-k="path">${FIREFLY}<div><b>Đường Ánh Sáng</b><span>Trả lời nhanh và đúng để đưa đom đóm về hải đăng. Có tim và đồng hồ.</span></div></button></div>`;
   $("#game").querySelectorAll(".pick").forEach(b=>b.onclick=()=>{ gameKind=b.dataset.k; tone([[440,.08,0]]); renderGame(); });
@@ -926,14 +944,43 @@ function route(){
 }
 window.addEventListener("hashchange",route);
 setAccent(accent); route();
-const APP_VERSION="8";
+const APP_VERSION="9";
 /* --- leaderboard (Google Sheets) --- */
 const SCORE_URL=""; // dán link Web app của Google Apps Script vào đây
 function award(state,game,raw,xp){
   xp=Math.max(0,Math.round(xp));
-  if(!state.sent){ state.sent=true; if(xp>0) submitScore({game,raw,xp,lesson:L.title}); }
-  if(!SCORE_URL) return `<p class="xp">+${xp} điểm thành tích</p>`;
-  return `<p class="xp">+${xp} điểm thành tích · đã ghi vào bảng xếp hạng</p>`;
+  if(!state.sent){ state.sent=true; if(xp>0){ store.set("hv-xp-total",store.get("hv-xp-total",0)+xp); lastGain=xp; showWho(); submitScore({game,raw,xp,lesson:L.title}); } }
+  setTimeout(()=>fillMini(true),0);
+  return `<p class="xp">+${xp} điểm thành tích${SCORE_URL?" · đã cộng vào bảng xếp hạng":""}</p><div class="mini-rank" data-mini></div>`;
+}
+let lastGain=0, rankCache=null, rankAt=0;
+const TROPHY_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>';
+const normName=n=>String(n).trim().toLowerCase().replace(/\s+/g," ");
+async function getRank(force){
+  if(!SCORE_URL) return null;
+  if(!force && rankCache && Date.now()-rankAt<20000) return rankCache;
+  await flushScores();
+  const r=await fetch(SCORE_URL+"?t="+Date.now()); const j=await r.json(); rankCache=j; rankAt=Date.now(); return j;
+}
+async function fillMini(force){
+  const els=[...document.querySelectorAll("[data-mini]")]; if(!els.length) return;
+  els.forEach(e=>{ const br=e.parentElement&&e.parentElement.querySelector(":scope > .btnrow"); if(br&&e.nextElementSibling!==br) br.before(e); });
+  const me=normName(studentName()); let html;
+  if(!SCORE_URL){
+    html=`<div class="mr-h"><b>${TROPHY_SVG}Điểm của bạn</b></div><div class="mr-row me"><span class="no">★</span><span class="nm">${esc(studentName()||"Bạn")}</span><span class="tt">${store.get("hv-xp-total",0)}${lastGain?`<span class="plus">+${lastGain}</span>`:""}</span></div>
+      <div class="mr-note">Bảng xếp hạng cả lớp sẽ hiện ở đây khi cô bật.</div>`;
+  } else {
+    els.forEach(e=>{ if(!e.innerHTML) e.innerHTML=`<div class="mr-note">Đang tải bảng xếp hạng...</div>`; });
+    try{ const j=await getRank(force); const rows=j.rows||[]; const mi=rows.findIndex(x=>normName(x.name)===me);
+      const row=x=>`<div class="mr-row ${x.rank<=3?"top"+x.rank:""} ${normName(x.name)===me?"me":""}"><span class="no">${x.rank}</span><span class="nm">${esc(x.name)}</span><span class="tt">${x.total}${normName(x.name)===me&&lastGain?`<span class="plus">+${lastGain}</span>`:""}</span></div>`;
+      let list=rows.slice(0,5).map(row).join("");
+      if(mi>=5) list+=`<div class="mr-gap">⋯</div>`+row(rows[mi]);
+      html=`<div class="mr-h"><b>${TROPHY_SVG}Bảng xếp hạng lớp</b><button data-all>Xem tất cả</button></div>${list||'<div class="mr-note">Chưa có ai. Hãy là người đầu tiên!</div>'}
+        ${mi>=0?`<div class="mr-note">Bạn đang đứng hạng ${mi+1}/${rows.length}.</div>`:""}`;
+      if(mi>=0){ store.set("hv-xp-total",rows[mi].total); showWho(); }
+    }catch(e){ html=`<div class="mr-note">Không tải được bảng xếp hạng. Kiểm tra mạng rồi thử lại.</div>`; }
+  }
+  document.querySelectorAll("[data-mini]").forEach(e=>{ e.innerHTML=html; e.querySelector("[data-all]")?.addEventListener("click",()=>{ location.hash="xep-hang"; }); });
 }
 function submitScore(item){
   if(!SCORE_URL) return;
@@ -955,8 +1002,7 @@ async function loadRank(){
   const box=$("#rankList");
   if(!SCORE_URL){ box.innerHTML=`<div class="soon"><strong>Bảng xếp hạng chưa được bật</strong>Cô giáo sẽ bật bảng xếp hạng sớm. Trong lúc chờ, điểm của bạn vẫn hiện sau mỗi lần chơi.</div>`; return; }
   box.innerHTML=`<div class="soon"><strong>Đang tải bảng xếp hạng...</strong></div>`;
-  await flushScores();
-  try{ const r=await fetch(SCORE_URL+"?t="+Date.now()); const j=await r.json(); const me=studentName().toLowerCase().replace(/\s+/g," ");
+  try{ const j=await getRank(true); const me=studentName().toLowerCase().replace(/\s+/g," ");
     if(j.since) $("#rankSince").textContent="Tổng điểm thành tích từ "+new Date(j.since).toLocaleDateString("vi-VN")+" đến nay.";
     box.innerHTML=j.rows.length? j.rows.map(x=>`<div class="rk ${x.rank<=3?"top"+x.rank:""} ${x.name.toLowerCase().replace(/\s+/g," ")===me?"me":""}">
       <span class="no">${x.rank}</span><span class="nm">${esc(x.name)}<br><span class="pl">${x.plays} lần chơi</span></span><span class="tt">${x.total}<small>điểm</small></span></div>`).join("")
@@ -970,7 +1016,7 @@ setTimeout(flushScores,1500);
 function studentName(){ return store.get("hv-name",""); }
 function certLine(){ const n=studentName(), d=new Date();
   return `<div class="certify">${n?`<b>${esc(n)}</b> · `:""}${esc(L.title)} · ${d.toLocaleDateString("vi-VN")} ${d.toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"})}</div>`; }
-function showWho(){ const n=studentName(); $("#who").hidden=!n; $("#whoName").textContent=n; }
+function showWho(){ const n=studentName(); $("#who").hidden=!n; $("#whoName").textContent=n; $("#whoTot").textContent=store.get("hv-xp-total",0)+" điểm"; }
 function askName(){ $("#nameModal").hidden=false; const i=$("#nameInput"); i.value=studentName(); setTimeout(()=>i.focus(),50); }
 $("#nameForm").onsubmit=e=>{ e.preventDefault(); const v=$("#nameInput").value.trim().replace(/\s+/g," "); if(!v) return; store.set("hv-name",v); $("#nameModal").hidden=true; showWho(); };
 $("#whoEdit").onclick=askName;
