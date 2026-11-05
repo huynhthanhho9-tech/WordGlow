@@ -425,6 +425,32 @@ const LESSONS = [
     16:{w:"As long as …", ipa:"/əz ˈlɒŋ əz/", type:"liên từ điều kiện", vi:"Miễn là / chừng nào mà …", note:"Dùng để khẳng định lại quan điểm ở kết bài."},
     17:{w:"tangible pleasure", ipa:"/ˈtændʒəbl ˈpleʒə/", type:"collocation", vi:"niềm vui hữu hình (cảm nhận được bằng tay)", note:"tangible ≈ physical, giúp đa dạng từ vựng."}
   }
+},
+{
+  id:"colwick-arts-centre",
+  skill:"writing",
+  kind:"IELTS Writing Task 1 · Bản đồ",
+  title:"Colwick Arts Centre",
+  prompt:"Bài mẫu mô tả hai bản đồ của <b>Colwick Arts Centre</b> năm 2005 và hiện nay. Chú ý các cụm từ chỉ <b>sự thay đổi</b> và <b>vị trí</b>.",
+  paragraphs:[
+"The maps show the changes to Colwick Arts Centre between 2005 and [[the present day|1]]. We can see that the Centre [[expanded|2]] and new [[facilities|3]] were added [[during this period|4]].",
+"[[One of the major changes|5]] is that the outside area was developed. In 2005 there was [[an empty area of land|6]] outside the Centre. Trees were planted there and [[an outdoor exhibition area|7]] was made. The café was moved to the front of the Arts Centre and tables were added outside.",
+"Inside, a central exhibition area was created. The [[information desk|8]] was moved [[to the front of|9]] the central area. In the past there were two galleries but now there is only one; however, a drama studio was built. In 2005 the concert hall and cinema were in the same space, whereas now they are [[separate|10]]. In addition, an extra meeting room was [[constructed|11]]. The toilets moved to [[the opposite side of|12]] the Centre."
+  ],
+  words:{
+    1:{w:"the present day", ipa:"/ðə ˈpreznt deɪ/", type:"cụm danh từ", vi:"ngày nay, thời điểm hiện tại", note:"Dùng để nói mốc thời gian “bây giờ” khi so sánh với quá khứ (2005)."},
+    2:{w:"expand", ipa:"/ɪkˈspænd/", type:"động từ", vi:"mở rộng, phát triển to hơn", note:"Trong bài dùng thì quá khứ: expanded /ɪkˈspændɪd/."},
+    3:{w:"facilities", ipa:"/fəˈsɪlətiz/", type:"danh từ (số nhiều)", vi:"cơ sở vật chất, các tiện ích", note:"Số ít: a facility. Ví dụ: sports facilities, new facilities."},
+    4:{w:"during this period", ipa:"/ˈdjʊərɪŋ ðɪs ˈpɪəriəd/", type:"cụm trạng từ", vi:"trong suốt khoảng thời gian này", note:"Cụm rất hay dùng khi mô tả sự thay đổi theo thời gian."},
+    5:{w:"one of the major changes", ipa:"/wʌn əv ðə ˈmeɪdʒə ˈtʃeɪndʒɪz/", type:"cụm danh từ", vi:"một trong những thay đổi lớn", note:"Sau “one of the” luôn là danh từ số nhiều: changes."},
+    6:{w:"an empty area of land", ipa:"/ən ˈempti ˈeəriə əv lænd/", type:"cụm danh từ", vi:"một khu đất trống", note:"empty = trống, không có gì."},
+    7:{w:"an outdoor exhibition area", ipa:"/ən ˈaʊtdɔːr ˌeksɪˈbɪʃn ˈeəriə/", type:"cụm danh từ", vi:"khu triển lãm ngoài trời", note:"outdoor = ngoài trời, trái nghĩa với indoor = trong nhà."},
+    8:{w:"information desk", ipa:"/ˌɪnfəˈmeɪʃn desk/", type:"danh từ ghép", vi:"quầy thông tin, quầy hướng dẫn", note:"Thường đặt ở lối vào của tòa nhà."},
+    9:{w:"to the front of", ipa:"/tə ðə frʌnt əv/", type:"cụm giới từ (vị trí)", vi:"ra phía trước của", note:"Dùng với “move”: was moved to the front of …"},
+    10:{w:"separate", ipa:"/ˈseprət/", type:"tính từ", vi:"riêng biệt, tách rời", note:"Khi là động từ thì đọc khác: separate /ˈsepəreɪt/ = tách ra."},
+    11:{w:"construct", ipa:"/kənˈstrʌkt/", type:"động từ", vi:"xây dựng", note:"Trong bài dùng câu bị động: was constructed = đã được xây dựng."},
+    12:{w:"the opposite side of", ipa:"/ði ˈɒpəzɪt saɪd əv/", type:"cụm giới từ (vị trí)", vi:"phía đối diện của", note:"opposite = đối diện. Ví dụ: on the opposite side of the road."}
+  }
 }
 ];
 
@@ -944,7 +970,7 @@ function route(){
 }
 window.addEventListener("hashchange",route);
 setAccent(accent); route();
-const APP_VERSION="9";
+const APP_VERSION="10";
 /* --- leaderboard (Google Sheets) --- */
 const SCORE_URL=""; // dán link Web app của Google Apps Script vào đây
 function award(state,game,raw,xp){
