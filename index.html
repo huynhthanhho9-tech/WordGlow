@@ -320,6 +320,12 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .mr-note{font-size:12px;color:var(--muted);margin-top:6px}
 .plus{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;color:var(--good);animation:pop .4s}
 .who .tot{color:var(--glow);font-weight:600}
+
+.units{display:flex;flex-direction:column;gap:26px}
+.unit-h{display:flex;align-items:baseline;gap:10px;font-size:20px;margin:0 0 12px}
+.unit-h span{font-size:13px;font-weight:500;color:var(--muted)}
+.unit-soon{grid-column:1/-1;padding:24px}
+.unit-soon strong{margin-top:0}
 </style>
 
 </head>
@@ -330,7 +336,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <div class="wrap">
  <section id="home">
   <div class="sec-head"><div><div class="eyebrow">Kỹ năng</div><h2 id="secTitle"></h2><p id="secDesc"></p></div></div>
-  <div class="lessons" id="lessons"></div>
+  <div id="lessons" class="units"></div>
  </section>
  <section id="rankView" hidden>
   <div class="sec-head"><div><div class="eyebrow">Cả lớp</div><h2>Bảng xếp hạng</h2><p id="rankSince">Tổng điểm thành tích của mỗi bạn qua các lần làm Kiểm tra và chơi game.</p></div>
@@ -929,6 +935,8 @@ function showTab(t){
   if(synth) synth.cancel();
   stopGame(); if(t==="cards") renderCards(); if(t==="quiz") renderQuiz(); if(t==="game"){ gameState=null; eg=null; gameKind=null; renderGame(); }
 }
+/* Unit trong từng mục. Bài học thuộc unit nào thì thêm unit:"Unit 2" vào bài đó. */
+const UNITS={ listening:["Unit 2"] };
 const SKILLS={
   listening:{name:"Listening",desc:"Từ vựng từ các bài nghe: nghe lại từng từ, hiểu nghĩa và nhận ra khi nghe."},
   speaking:{name:"Speaking",desc:"Từ vựng và cụm từ dùng trong bài nói mẫu, kèm phát âm để luyện nói theo."},
@@ -948,11 +956,19 @@ function showHome(k){
   $("#home").hidden=false; $("#lessonView").hidden=true;
   $("#secTitle").textContent=SKILLS[k].name; $("#secDesc").textContent=SKILLS[k].desc;
   const ls=LESSONS.filter(l=>l.skill===k);
-  $("#lessons").innerHTML= ls.length ? ls.map(l=>{ const p=lessonProgress(l);
+  const card=l=>{ const p=lessonProgress(l);
     return `<button class="lcard" data-id="${l.id}"><span class="k">${esc(l.kind)}</span><span class="t">${esc(l.title)}</span>
-      <span class="m"><span>${p.n} từ · đã nhớ ${p.k}</span><span class="bar"><i style="width:${p.n?p.k/p.n*100:0}%"></i></span></span></button>`;}).join("")
-    : `<div class="soon" style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${I_SKILL[k]}</svg>
+      <span class="m"><span>${p.n} từ · đã nhớ ${p.k}</span><span class="bar"><i style="width:${p.n?p.k/p.n*100:0}%"></i></span></span></button>`; };
+  const units=[...new Set([...(UNITS[k]||[]), ...ls.filter(l=>l.unit).map(l=>l.unit)])];
+  let html="";
+  units.forEach(u=>{ const inU=ls.filter(l=>l.unit===u);
+    html+=`<div class="unit"><h3 class="unit-h">${esc(u)}<span>${inU.length} bài</span></h3><div class="lessons">${inU.length?inU.map(card).join(""):
+      `<div class="soon unit-soon"><strong>Bài học ${esc(u)} sắp có</strong>Cô sẽ cập nhật bài cho ${esc(u)} sớm nhé.</div>`}</div></div>`; });
+  const rest=ls.filter(l=>!l.unit);
+  if(rest.length) html+= units.length ? `<div class="unit"><h3 class="unit-h">Bài khác<span>${rest.length} bài</span></h3><div class="lessons">${rest.map(card).join("")}</div></div>` : `<div class="lessons">${rest.map(card).join("")}</div>`;
+  if(!html) html=`<div class="soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${I_SKILL[k]}</svg>
        <strong>Bài học ${SKILLS[k].name} sắp có</strong>Cô sẽ cập nhật bài mới cho mục này. Trong lúc chờ, bạn hãy ôn các bài ở mục khác nhé.</div>`;
+  $("#lessons").innerHTML=html;
   $("#lessons").querySelectorAll(".lcard").forEach(c=>c.onclick=()=>{ location.hash=c.dataset.id; });
   window.scrollTo(0,0);
 }
@@ -970,7 +986,7 @@ function route(){
 }
 window.addEventListener("hashchange",route);
 setAccent(accent); route();
-const APP_VERSION="10";
+const APP_VERSION="11";
 /* --- leaderboard (Google Sheets) --- */
 const SCORE_URL=""; // dán link Web app của Google Apps Script vào đây
 function award(state,game,raw,xp){
