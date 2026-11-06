@@ -328,6 +328,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .unit-soon strong{margin-top:0}
 .code-err{color:var(--bad)!important;font-weight:500}
 .who .cls{background:var(--glow);color:#141c33;border-radius:99px;padding:1px 8px;font-size:12px;font-weight:600;margin-left:2px}
+@media (max-width:420px){.skill span{font-size:12px}}
 </style>
 
 </head>
@@ -460,6 +461,35 @@ const LESSONS = [
     10:{w:"separate", ipa:"/ˈseprət/", type:"tính từ", vi:"riêng biệt, tách rời", note:"Khi là động từ thì đọc khác: separate /ˈsepəreɪt/ = tách ra."},
     11:{w:"construct", ipa:"/kənˈstrʌkt/", type:"động từ", vi:"xây dựng", note:"Trong bài dùng câu bị động: was constructed = đã được xây dựng."},
     12:{w:"the opposite side of", ipa:"/ði ˈɒpəzɪt saɪd əv/", type:"cụm giới từ (vị trí)", vi:"phía đối diện của", note:"opposite = đối diện. Ví dụ: on the opposite side of the road."}
+  }
+},
+{
+  id:"b1-unit12-animals",
+  cls:"b1",
+  skill:"vocabulary",
+  unit:"Unit 12",
+  kind:"B1 · Vocabulary · Unit 12",
+  title:"Animals and Nature",
+  prompt:"Đọc đoạn văn kể về một ngày đi sở thú. Bấm vào tên các <b>con vật</b> được tô màu để xem nghĩa và nghe phát âm.",
+  paragraphs:[
+"Last weekend, I visited a zoo with my family. We saw many interesting animals there. An [[eagle|1]] was flying high in the sky, while a [[butterfly|2]] landed on a flower. Near a small pond, we saw a [[frog|3]] jumping into the water. There was also a [[bee|4]] collecting honey from flowers. In another area, we saw a [[deer|5]], a [[donkey|6]], a [[fox|7]], and a [[wolf|8]]. The guide told us that wolves usually live in groups and hunt for food together.",
+"We also learned that a [[bat|9]] can fly at night, while an [[ant|10]] is very strong for its small size. Later, we visited an aquarium and saw a [[shark|11]] swimming among other fish. Outside, a [[fly|12]] was buzzing around our food, and a [[mosquito|13]] landed on my arm. Finally, we found a [[worm|14]] in the garden. It was a wonderful day because we learned many new things about animals and nature."
+  ],
+  words:{
+    1:{w:"eagle", ipa:"/ˈiːɡl/", type:"danh từ", vi:"chim đại bàng", note:"Loài chim lớn, bay rất cao, mắt rất tinh."},
+    2:{w:"butterfly", ipa:"/ˈbʌtəflaɪ/", type:"danh từ", vi:"con bướm", note:"Số nhiều: butterflies."},
+    3:{w:"frog", ipa:"/frɒɡ/", type:"danh từ", vi:"con ếch", note:"Ếch sống gần ao, hồ và nhảy rất giỏi."},
+    4:{w:"bee", ipa:"/biː/", type:"danh từ", vi:"con ong", note:"Ong lấy mật hoa để làm mật (honey)."},
+    5:{w:"deer", ipa:"/dɪə/", type:"danh từ", vi:"con hươu, con nai", note:"Số nhiều vẫn là deer: one deer, two deer."},
+    6:{w:"donkey", ipa:"/ˈdɒŋki/", type:"danh từ", vi:"con lừa", note:"Số nhiều: donkeys."},
+    7:{w:"fox", ipa:"/fɒks/", type:"danh từ", vi:"con cáo", note:"Số nhiều: foxes."},
+    8:{w:"wolf", ipa:"/wʊlf/", type:"danh từ", vi:"chó sói", note:"Số nhiều: wolves /wʊlvz/. Sói thường sống theo bầy."},
+    9:{w:"bat", ipa:"/bæt/", type:"danh từ", vi:"con dơi", note:"Dơi bay vào ban đêm. “bat” còn có nghĩa là cây gậy đánh bóng."},
+    10:{w:"ant", ipa:"/ænt/", type:"danh từ", vi:"con kiến", note:"Kiến rất khỏe so với kích thước nhỏ của nó."},
+    11:{w:"shark", ipa:"/ʃɑːk/", type:"danh từ", vi:"cá mập", note:"Chú ý âm /ʃ/ ở đầu, giống “sh” trong “she”."},
+    12:{w:"fly", ipa:"/flaɪ/", type:"danh từ", vi:"con ruồi", note:"Khi là động từ, fly = bay (a bat can fly at night). Số nhiều: flies."},
+    13:{w:"mosquito", ipa:"/məˈskiːtəʊ/", type:"danh từ", vi:"con muỗi", note:"Số nhiều: mosquitoes."},
+    14:{w:"worm", ipa:"/wɜːm/", type:"danh từ", vi:"con giun, con sâu", note:"Chú ý cách đọc /wɜːm/, khác với warm /wɔːm/ (ấm)."}
   }
 }
 ];
@@ -942,7 +972,7 @@ function showTab(t){
 /* Unit trong từng mục. Bài học thuộc unit nào thì thêm unit:"Unit 2" vào bài đó. */
 const UNITS={
   ielts:{ listening:["Unit 2"] },
-  b1:{}
+  b1:{ vocabulary:["Unit 12"] }
 };
 /* Lớp học: mỗi lớp có mã riêng (lưu dạng mã hóa). Bài học thuộc lớp nào thì ghi cls:"ielts" hoặc cls:"b1". */
 const CLASSES={ ielts:{name:"IELTS", hash:"317c83e5"}, b1:{name:"B1", hash:"a9c78b91"} };
@@ -950,13 +980,14 @@ function codeHash(c){ let x=2166136261; for(const ch of c.toUpperCase().replace(
 const myClass=()=>{ const c=store.get("hv-class",""); return CLASSES[c]?c:""; };
 const visible=l=>!l.cls||l.cls===myClass();
 const SKILLS={
+  vocabulary:{name:"Vocabulary",desc:"Từ vựng theo chủ đề của từng unit: nghĩa, phát âm và cách dùng trong câu."},
   listening:{name:"Listening",desc:"Từ vựng từ các bài nghe: nghe lại từng từ, hiểu nghĩa và nhận ra khi nghe."},
   speaking:{name:"Speaking",desc:"Từ vựng và cụm từ dùng trong bài nói mẫu, kèm phát âm để luyện nói theo."},
   reading:{name:"Reading",desc:"Từ vựng học thuật từ các bài đọc, giúp đọc nhanh và hiểu đúng hơn."},
   writing:{name:"Writing",desc:"Collocation và cấu trúc từ bài viết mẫu band cao, dùng được ngay trong bài viết của bạn."}
 };
 let skill=null;
-document.querySelectorAll(".skill").forEach(b=>b.onclick=()=>{ location.hash=b.dataset.skill; });
+
 $("#back").onclick=()=>{ location.hash=skill; };
 function lessonProgress(l){ const k=store.get("hv-known-"+l.id,[]).length, n=Object.keys(l.words).length; return {k,n}; }
 function setSkill(k){
@@ -985,7 +1016,20 @@ function showHome(k){
   window.scrollTo(0,0);
 }
 const I_SKILL={}; document.querySelectorAll(".skill").forEach(b=>I_SKILL[b.dataset.skill]=b.querySelector("svg").innerHTML);
+I_SKILL.vocabulary='<path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4z"/><path d="M8 15l2.5-7h1L14 15M9 12.5h4"/>';
+/* Thứ tự các mục trên thanh menu, theo từng lớp */
+const SKILL_ORDER={ ielts:["listening","speaking","reading","writing"], b1:["vocabulary","listening","speaking","reading","writing"] };
+const skillOrder=()=>SKILL_ORDER[myClass()]||SKILL_ORDER.ielts;
+let skillBarFor=null;
+function renderSkillBar(){
+  const order=skillOrder(), bar=$(".skills-in"); skillBarFor=myClass();
+  bar.style.gridTemplateColumns=`repeat(${order.length},minmax(0,1fr))`;
+  bar.innerHTML=order.map(k=>`<button class="skill" data-skill="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${I_SKILL[k]}</svg><span>${SKILLS[k].name}</span></button>`).join("");
+  bar.querySelectorAll(".skill").forEach(b=>b.onclick=()=>{ location.hash=b.dataset.skill; });
+  if(skill) setSkill(skill);
+}
 function route(){
+  if(skillBarFor!==myClass()) renderSkillBar();
   const id=location.hash.slice(1);
   if(id==="xep-hang"){ stopGame(); setSkill(null); $("#home").hidden=true; $("#lessonView").hidden=true; $("#rankView").hidden=false; setTimeout(loadRank); window.scrollTo(0,0); return; }
   $("#rankView").hidden=true;
@@ -993,12 +1037,13 @@ function route(){
   if(l){ setSkill(l.skill); $("#backSkill").textContent=SKILLS[l.skill].name; $("#home").hidden=true; $("#lessonView").hidden=false;
     if(L!==l) loadLesson(l); window.scrollTo(0,0); return; }
   stopGame();
-  const k = SKILLS[id] ? id : (LESSONS[0]?.skill || "listening");
+  const order=skillOrder();
+  const k = order.includes(id) ? id : (order.find(x=>LESSONS.some(l=>l.skill===x&&visible(l))) || order[0]);
   showHome(k);
 }
 window.addEventListener("hashchange",route);
 setAccent(accent); route();
-const APP_VERSION="12";
+const APP_VERSION="13";
 /* --- leaderboard (Google Sheets) --- */
 const SCORE_URL=""; // dán link Web app của Google Apps Script vào đây
 function award(state,game,raw,xp){
