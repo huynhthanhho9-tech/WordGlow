@@ -5,7 +5,8 @@
 const SHEET_SCORES = 'Điểm';
 const SHEET_RANK = 'Xếp hạng';
 const SHEET_ARCHIVE = 'Lưu trữ';
-const HEADERS = ['Thời gian', 'Tên học sinh', 'Bài học', 'Trò chơi', 'Điểm trong game', 'Điểm thành tích'];
+const HEADERS = ['Thời gian', 'Tên học sinh', 'Lớp', 'Bài học', 'Trò chơi', 'Điểm trong game', 'Điểm thành tích'];
+const CLASSES = { ielts: 'IELTS', b1: 'B1' };
 const GAMES = { quiz: 'Kiểm tra', path: 'Đường Ánh Sáng', egg: 'Gà Con Săn Trứng' };
 const MAX_XP = 200;
 
@@ -37,12 +38,13 @@ function doPost(e) {
     const name = String(d.name || '').trim().replace(/\s+/g, ' ').slice(0, 40);
     const game = GAMES[d.game] ? d.game : null;
     const xp = Math.round(Number(d.xp));
-    if (!name || !game || !isFinite(xp) || xp < 0 || xp > MAX_XP) return json_({ ok: false, error: 'invalid' });
+    const cls = CLASSES[d.cls] ? CLASSES[d.cls] : '';
+    if (!name || !cls || !game || !isFinite(xp) || xp < 0 || xp > MAX_XP) return json_({ ok: false, error: 'invalid' });
     const lock = LockService.getScriptLock();
     lock.waitLock(10000);
     try {
       sheet_(SHEET_SCORES, HEADERS).appendRow([
-        new Date(d.at || Date.now()), name, String(d.lesson || '').slice(0, 80), GAMES[game],
+        new Date(d.at || Date.now()), name, cls, String(d.lesson || '').slice(0, 80), GAMES[game],
         Math.round(Number(d.raw) || 0), xp
       ]);
     } finally { lock.releaseLock(); }
@@ -54,23 +56,25 @@ function doPost(e) {
 
 /** App đọc bảng xếp hạng ở đây */
 function doGet(e) {
-  return json_({ ok: true, since: roundStart_(), rows: ranking_() });
+  const cls = CLASSES[e && e.parameter && e.parameter.cls] || '';
+  return json_({ ok: true, since: roundStart_(), cls: cls, rows: cls ? ranking_(cls) : [] });
 }
 
-function ranking_() {
+function ranking_(cls) {
   const sh = sheet_(SHEET_SCORES, HEADERS);
-  const values = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 6).getValues() : [];
+  const values = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 7).getValues() : [];
   const map = {};
   values.forEach(r => {
-    const name = String(r[1]).trim(); if (!name) return;
-    const key = name.toLowerCase().replace(/\s+/g, ' ');
-    const m = map[key] || (map[key] = { name: name, total: 0, plays: 0, last: null });
-    m.total += Number(r[5]) || 0; m.plays++;
+    const name = String(r[1]).trim(), c = String(r[2]).trim(); if (!name || (cls && c !== cls)) return;
+    const key = c + '|' + name.toLowerCase().replace(/\s+/g, ' ');
+    const m = map[key] || (map[key] = { name: name, cls: c, total: 0, plays: 0, last: null });
+    m.total += Number(r[6]) || 0; m.plays++;
     const t = new Date(r[0]); if (!m.last || t > m.last) m.last = t;
   });
-  return Object.keys(map).map(k => map[k])
-    .sort((a, b) => b.total - a.total || b.plays - a.plays)
-    .map((m, i) => ({ rank: i + 1, name: m.name, total: m.total, plays: m.plays, last: m.last ? m.last.toISOString() : null }));
+  const all = Object.keys(map).map(k => map[k]).sort((a, b) => a.cls.localeCompare(b.cls) || b.total - a.total || b.plays - a.plays);
+  const rankIn = {};
+  return all.map(m => { rankIn[m.cls] = (rankIn[m.cls] || 0) + 1;
+    return { rank: rankIn[m.cls], name: m.name, cls: m.cls, total: m.total, plays: m.plays, last: m.last ? m.last.toISOString() : null }; });
 }
 
 function roundStart_() {
@@ -86,10 +90,10 @@ function writeRank_(sh, title) {
   const rows = ranking_();
   sh.clear();
   sh.getRange(1, 1).setValue(title).setFontWeight('bold').setFontSize(13);
-  const head = ['Hạng', 'Tên học sinh', 'Tổng điểm thành tích', 'Số lần chơi'];
+  const head = ['Lớp', 'Hạng', 'Tên học sinh', 'Tổng điểm thành tích', 'Số lần chơi'];
   sh.getRange(3, 1, 1, head.length).setValues([head]).setFontWeight('bold').setBackground('#ffd84d');
-  if (rows.length) sh.getRange(4, 1, rows.length, 4).setValues(rows.map(r => [r.rank, r.name, r.total, r.plays]));
-  sh.autoResizeColumns(1, 4);
+  if (rows.length) sh.getRange(4, 1, rows.length, 5).setValues(rows.map(r => [r.cls, r.rank, r.name, r.total, r.plays]));
+  sh.autoResizeColumns(1, 5);
   return rows.length;
 }
 
@@ -103,8 +107,8 @@ function closeRound() {
   const n = writeRank_(ss.insertSheet(name), name + (roundStart_() ? ' (từ ' + fmt_(new Date(roundStart_())) + ')' : ''));
   const sc = sheet_(SHEET_SCORES, HEADERS), ar = sheet_(SHEET_ARCHIVE, HEADERS);
   if (sc.getLastRow() > 1) {
-    const data = sc.getRange(2, 1, sc.getLastRow() - 1, 6).getValues();
-    ar.getRange(ar.getLastRow() + 1, 1, data.length, 6).setValues(data);
+    const data = sc.getRange(2, 1, sc.getLastRow() - 1, 7).getValues();
+    ar.getRange(ar.getLastRow() + 1, 1, data.length, 7).setValues(data);
     sc.deleteRows(2, data.length);
   }
   PropertiesService.getScriptProperties().setProperty('roundStart', new Date().toISOString());

@@ -326,12 +326,14 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .unit-h span{font-size:13px;font-weight:500;color:var(--muted)}
 .unit-soon{grid-column:1/-1;padding:24px}
 .unit-soon strong{margin-top:0}
+.code-err{color:var(--bad)!important;font-weight:500}
+.who .cls{background:var(--glow);color:#141c33;border-radius:99px;padding:1px 8px;font-size:12px;font-weight:600;margin-left:2px}
 </style>
 
 </head>
 <body>
-<header class="brand"><div class="brand-in"><a class="logo" href="#"><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#2c4fd6"/><rect x="96" y="292" width="320" height="64" rx="12" fill="#ffd84d"/><text x="256" y="262" text-anchor="middle" font-family="Lexend,Arial,sans-serif" font-weight="700" font-size="210" fill="#fff">Aa</text><text x="256" y="340" text-anchor="middle" font-family="Lexend,Arial,sans-serif" font-weight="700" font-size="44" fill="#1c2433">WordGlow</text></svg><div><div class="wordmark">Word<span>Glow</span></div><div class="tagline">Học từ vựng tiếng Anh qua bài mẫu: nghe, hiểu và nhớ lâu</div><div class="tagline" id="appVer" style="font-size:11px;margin-top:4px;opacity:.7"></div></div></a><div class="brand-actions"><button class="trophy" id="rankBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><span>Bảng xếp hạng</span></button><div class="who" id="who" hidden><span>Xin chào, <b id="whoName"></b> · <span class="tot" id="whoTot">0 điểm</span></span><button id="whoEdit">Đổi tên</button></div></div></div></header>
-<div class="modal" id="nameModal" hidden><form class="modal-in" id="nameForm"><h2>Chào bạn! Bạn tên là gì?</h2><p>Tên sẽ hiện trên kết quả bài kiểm tra và trò chơi để bạn chụp màn hình gửi cô. Tên chỉ lưu trên máy này.</p><input id="nameInput" maxlength="40" placeholder="Ví dụ: Minh Anh - lớp 7A" autocomplete="off" required><button class="btn primary" style="justify-content:center;font-size:16px;padding:12px">Bắt đầu học</button></form></div>
+<header class="brand"><div class="brand-in"><a class="logo" href="#"><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#2c4fd6"/><rect x="96" y="292" width="320" height="64" rx="12" fill="#ffd84d"/><text x="256" y="262" text-anchor="middle" font-family="Lexend,Arial,sans-serif" font-weight="700" font-size="210" fill="#fff">Aa</text><text x="256" y="340" text-anchor="middle" font-family="Lexend,Arial,sans-serif" font-weight="700" font-size="44" fill="#1c2433">WordGlow</text></svg><div><div class="wordmark">Word<span>Glow</span></div><div class="tagline">Học từ vựng tiếng Anh qua bài mẫu: nghe, hiểu và nhớ lâu</div><div class="tagline" id="appVer" style="font-size:11px;margin-top:4px;opacity:.7"></div></div></a><div class="brand-actions"><button class="trophy" id="rankBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><span>Bảng xếp hạng</span></button><div class="who" id="who" hidden><span>Xin chào, <b id="whoName"></b> <span class="cls" id="whoCls"></span> · <span class="tot" id="whoTot">0 điểm</span></span><button id="whoEdit">Đổi</button></div></div></div></header>
+<div class="modal" id="nameModal" hidden><form class="modal-in" id="nameForm"><h2>Chào bạn! Vào lớp học nào</h2><p>Nhập họ tên và mã lớp cô giáo đã gửi. Tên của bạn sẽ hiện trên kết quả và bảng xếp hạng của lớp.</p><input id="nameInput" maxlength="40" placeholder="Họ tên, ví dụ: Minh Anh" autocomplete="off" required><input id="codeInput" maxlength="20" placeholder="Mã lớp cô gửi, ví dụ: ABC-1234" autocomplete="off" autocapitalize="characters" required><p class="code-err" id="codeErr" hidden>Mã lớp chưa đúng. Hãy kiểm tra lại mã cô gửi nhé.</p><button class="btn primary" style="justify-content:center;font-size:16px;padding:12px">Bắt đầu học</button></form></div>
 <nav class="skills" aria-label="Kỹ năng"><div class="skills-in"><button class="skill" data-skill="listening"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-6h3zM3 19a2 2 0 0 0 2 2h1v-6H3z"/></svg><span>Listening</span></button><button class="skill" data-skill="speaking"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10a7 7 0 0 1-14 0M12 17v5M8 22h8"/></svg><span>Speaking</span></button><button class="skill" data-skill="reading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2zM22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><span>Reading</span></button><button class="skill" data-skill="writing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>Writing</span></button></div></nav>
 <div class="wrap">
  <section id="home">
@@ -402,6 +404,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 const LESSONS = [
 {
   id:"printed-books",
+  cls:"ielts",
   skill:"writing",
   kind:"IELTS Writing Task 2 · Bài mẫu Band 8",
   title:"Printed Newspapers & Books",
@@ -434,6 +437,7 @@ const LESSONS = [
 },
 {
   id:"colwick-arts-centre",
+  cls:"ielts",
   skill:"writing",
   kind:"IELTS Writing Task 1 · Bản đồ",
   title:"Colwick Arts Centre",
@@ -936,7 +940,15 @@ function showTab(t){
   stopGame(); if(t==="cards") renderCards(); if(t==="quiz") renderQuiz(); if(t==="game"){ gameState=null; eg=null; gameKind=null; renderGame(); }
 }
 /* Unit trong từng mục. Bài học thuộc unit nào thì thêm unit:"Unit 2" vào bài đó. */
-const UNITS={ listening:["Unit 2"] };
+const UNITS={
+  ielts:{ listening:["Unit 2"] },
+  b1:{}
+};
+/* Lớp học: mỗi lớp có mã riêng (lưu dạng mã hóa). Bài học thuộc lớp nào thì ghi cls:"ielts" hoặc cls:"b1". */
+const CLASSES={ ielts:{name:"IELTS", hash:"317c83e5"}, b1:{name:"B1", hash:"a9c78b91"} };
+function codeHash(c){ let x=2166136261; for(const ch of c.toUpperCase().replace(/\s+/g,"")){ x^=ch.charCodeAt(0); x=Math.imul(x,16777619)>>>0; } return x.toString(16).padStart(8,"0"); }
+const myClass=()=>{ const c=store.get("hv-class",""); return CLASSES[c]?c:""; };
+const visible=l=>!l.cls||l.cls===myClass();
 const SKILLS={
   listening:{name:"Listening",desc:"Từ vựng từ các bài nghe: nghe lại từng từ, hiểu nghĩa và nhận ra khi nghe."},
   speaking:{name:"Speaking",desc:"Từ vựng và cụm từ dùng trong bài nói mẫu, kèm phát âm để luyện nói theo."},
@@ -955,11 +967,11 @@ function showHome(k){
   setSkill(k); if(synth) synth.cancel();
   $("#home").hidden=false; $("#lessonView").hidden=true;
   $("#secTitle").textContent=SKILLS[k].name; $("#secDesc").textContent=SKILLS[k].desc;
-  const ls=LESSONS.filter(l=>l.skill===k);
+  const ls=LESSONS.filter(l=>l.skill===k&&visible(l));
   const card=l=>{ const p=lessonProgress(l);
     return `<button class="lcard" data-id="${l.id}"><span class="k">${esc(l.kind)}</span><span class="t">${esc(l.title)}</span>
       <span class="m"><span>${p.n} từ · đã nhớ ${p.k}</span><span class="bar"><i style="width:${p.n?p.k/p.n*100:0}%"></i></span></span></button>`; };
-  const units=[...new Set([...(UNITS[k]||[]), ...ls.filter(l=>l.unit).map(l=>l.unit)])];
+  const units=[...new Set([...((UNITS[myClass()]||{})[k]||[]), ...ls.filter(l=>l.unit).map(l=>l.unit)])];
   let html="";
   units.forEach(u=>{ const inU=ls.filter(l=>l.unit===u);
     html+=`<div class="unit"><h3 class="unit-h">${esc(u)}<span>${inU.length} bài</span></h3><div class="lessons">${inU.length?inU.map(card).join(""):
@@ -977,7 +989,7 @@ function route(){
   const id=location.hash.slice(1);
   if(id==="xep-hang"){ stopGame(); setSkill(null); $("#home").hidden=true; $("#lessonView").hidden=true; $("#rankView").hidden=false; setTimeout(loadRank); window.scrollTo(0,0); return; }
   $("#rankView").hidden=true;
-  const l=LESSONS.find(x=>x.id===id);
+  const l=LESSONS.find(x=>x.id===id&&visible(x));
   if(l){ setSkill(l.skill); $("#backSkill").textContent=SKILLS[l.skill].name; $("#home").hidden=true; $("#lessonView").hidden=false;
     if(L!==l) loadLesson(l); window.scrollTo(0,0); return; }
   stopGame();
@@ -986,7 +998,7 @@ function route(){
 }
 window.addEventListener("hashchange",route);
 setAccent(accent); route();
-const APP_VERSION="11";
+const APP_VERSION="12";
 /* --- leaderboard (Google Sheets) --- */
 const SCORE_URL=""; // dán link Web app của Google Apps Script vào đây
 function award(state,game,raw,xp){
@@ -1002,7 +1014,7 @@ async function getRank(force){
   if(!SCORE_URL) return null;
   if(!force && rankCache && Date.now()-rankAt<20000) return rankCache;
   await flushScores();
-  const r=await fetch(SCORE_URL+"?t="+Date.now()); const j=await r.json(); rankCache=j; rankAt=Date.now(); return j;
+  const r=await fetch(SCORE_URL+"?cls="+myClass()+"&t="+Date.now()); const j=await r.json(); rankCache=j; rankAt=Date.now(); return j;
 }
 async function fillMini(force){
   const els=[...document.querySelectorAll("[data-mini]")]; if(!els.length) return;
@@ -1034,7 +1046,7 @@ async function flushScores(){
   if(!SCORE_URL||flushing) return; flushing=true;
   try{ let q=store.get("hv-queue",[]);
     for(const it of q){ const name=studentName(); if(!name) break;
-      try{ const r=await fetch(SCORE_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({...it,name})});
+      try{ const r=await fetch(SCORE_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({...it,name,cls:myClass()})});
         const j=await r.json().catch(()=>({ok:true})); if(j.ok===false&&j.error!=="invalid") break;
         store.set("hv-queue",store.get("hv-queue",[]).filter(x=>x.id!==it.id)); }catch(e){ break; } }
   } finally { flushing=false; }
@@ -1058,11 +1070,16 @@ setTimeout(flushScores,1500);
 function studentName(){ return store.get("hv-name",""); }
 function certLine(){ const n=studentName(), d=new Date();
   return `<div class="certify">${n?`<b>${esc(n)}</b> · `:""}${esc(L.title)} · ${d.toLocaleDateString("vi-VN")} ${d.toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"})}</div>`; }
-function showWho(){ const n=studentName(); $("#who").hidden=!n; $("#whoName").textContent=n; $("#whoTot").textContent=store.get("hv-xp-total",0)+" điểm"; }
-function askName(){ $("#nameModal").hidden=false; const i=$("#nameInput"); i.value=studentName(); setTimeout(()=>i.focus(),50); }
-$("#nameForm").onsubmit=e=>{ e.preventDefault(); const v=$("#nameInput").value.trim().replace(/\s+/g," "); if(!v) return; store.set("hv-name",v); $("#nameModal").hidden=true; showWho(); };
+function showWho(){ const n=studentName(); $("#who").hidden=!n||!myClass(); $("#whoName").textContent=n; $("#whoCls").textContent=myClass()?"Lớp "+CLASSES[myClass()].name:""; $("#whoTot").textContent=store.get("hv-xp-total",0)+" điểm"; }
+function askName(){ $("#nameModal").hidden=false; $("#codeErr").hidden=true; const i=$("#nameInput"); i.value=studentName(); $("#codeInput").value=""; setTimeout(()=>(i.value?$("#codeInput"):i).focus(),50); }
+$("#nameForm").onsubmit=e=>{ e.preventDefault(); const v=$("#nameInput").value.trim().replace(/\s+/g," "); if(!v) return;
+  const hc=codeHash($("#codeInput").value); const c=Object.keys(CLASSES).find(k=>CLASSES[k].hash===hc);
+  if(!c){ $("#codeErr").hidden=false; $("#codeInput").focus(); return; }
+  const changed=c!==store.get("hv-class",""); store.set("hv-name",v); store.set("hv-class",c);
+  if(changed){ store.set("hv-xp-total",0); rankCache=null; }
+  $("#nameModal").hidden=true; showWho(); location.hash=""; route(); };
 $("#whoEdit").onclick=askName;
-showWho(); if(!studentName()) askName();
+showWho(); if(!studentName()||!myClass()) askName();
 if("serviceWorker" in navigator){
   let reloaded=false;
   navigator.serviceWorker.addEventListener("controllerchange",()=>{ if(reloaded) return; reloaded=true; location.reload(); });
