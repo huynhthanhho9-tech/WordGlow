@@ -982,8 +982,7 @@ function setupHTML(best){
   const opt=(k,v,l)=>`<button class="seg ${egSetup[k]===v?"on":""}" data-k="${k}" data-v="${v}">${l}</button>`;
   return `<div class="dice-box eg-setup"><div style="width:84px;height:84px">${CHICK}</div><h2 style="margin:0">Gà Con Săn Trứng</h2>
     <p style="margin:0;color:var(--muted);max-width:52ch">Có ${EG_EGGS} quả trứng (1 đến 10 điểm) và vài hang thỏ bí mật giấu dưới mây. Trả lời đúng để đổ xúc xắc, chọn một trong 8 hướng, gà đi đúng số bước và mở mây trên đường đi. Rơi xuống hang thỏ sẽ chui sang hang bên kia!</p>
-    <div class="set-row"><span>Số đội chơi</span><div class="segs">${[1,2,3,4].map(n=>opt("teams",n,n===1?"1 (tự chơi)":n+" đội")).join("")}</div></div>
-    <div class="set-row"><span>Số lượt mỗi đội</span><div class="segs">${[5,8,10,15].map(n=>opt("turns",n,n+" lượt")).join("")}</div></div>
+    <div class="set-row"><span>Số lượt chơi</span><div class="segs">${[5,8,10,15].map(n=>opt("turns",n,n+" lượt")).join("")}</div></div>
     ${best&&egSetup.teams===1?`<div style="color:var(--accent);font-weight:600">Điểm cao nhất của bạn: ${best}</div>`:""}
     <button class="btn primary" id="egStart" style="font-size:16px;padding:12px 26px">Bắt đầu chơi</button></div>
     <button class="g-back" id="gpick">← Chọn trò chơi khác</button>`;
@@ -992,7 +991,7 @@ function renderEgg(){
   const box=$("#game"), best=store.get("hv-egg-best-"+L.id,0);
   if(!eg){
     box.innerHTML=setupHTML(best);
-    box.querySelectorAll(".seg").forEach(b=>b.onclick=()=>{ const k=b.dataset.k; egSetup[k]=k==="mode"?b.dataset.v:+b.dataset.v; if(k==="teams") egSetup.turns=egSetup.teams===1?15:8; renderEgg(); });
+    box.querySelectorAll(".seg").forEach(b=>b.onclick=()=>{ const k=b.dataset.k; egSetup[k]=k==="mode"?b.dataset.v:+b.dataset.v; renderEgg(); });
     $("#egStart").onclick=()=>{ tone([[440,.08,0]]); newEgg(); $("#game").scrollIntoView({block:"start",behavior:"smooth"}); };
     $("#gpick").onclick=()=>{ gameKind=null; renderGame(); };
     return;
@@ -1187,7 +1186,7 @@ function route(){
 }
 window.addEventListener("hashchange",route);
 setAccent(accent); route();
-const APP_VERSION="16";
+const APP_VERSION="17";
 /* --- leaderboard (Google Sheets) --- */
 const SCORE_URL=""; // dán link Web app của Google Apps Script vào đây
 function award(state,game,raw,xp){

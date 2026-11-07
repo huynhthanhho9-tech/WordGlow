@@ -1,5 +1,5 @@
 // Đổi số phiên bản mỗi khi cập nhật bài để điện thoại tải bản mới.
-const VERSION = "v16";
+const VERSION = "v17";
 const CORE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(CORE.map(u => new Request(u, {cache: "reload"}))))); self.skipWaiting(); });
 self.addEventListener("activate", e => {
