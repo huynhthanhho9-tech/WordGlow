@@ -258,11 +258,11 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .cell .deco{position:absolute;left:8%;bottom:6%;width:34%;opacity:.9}
 .cell .item{position:absolute;inset:14%;display:grid;place-items:center}
 .cell .item svg{width:100%;height:100%}
+.cell:not(.open) .item,.cell:not(.open) .deco{visibility:hidden}
 .chick.me svg{filter:drop-shadow(0 0 6px #fff) drop-shadow(0 3px 2px rgba(0,0,0,.25))}
 .chick.me::after{content:"";position:absolute;left:20%;right:20%;bottom:-2%;height:12%;border-radius:50%;background:rgba(255,255,255,.55);z-index:-1}
 .chick.dive{transition:transform .5s,opacity .5s;transform:scale(.2) translateY(30%);opacity:0}
 .chick.pop svg{animation:pop .4s}
-.arrow.sel{background:#ffd84d;outline:3px solid #fff}
 .pv{position:absolute;z-index:2;pointer-events:none;background:rgba(255,216,77,.55);box-shadow:inset 0 0 0 3px #ffd84d;border-radius:6px}
 .pv span{position:absolute;right:4%;bottom:4%;min-width:44%;height:44%;border-radius:50%;background:#ffd84d;border:2px solid #7a3d00;display:grid;place-items:center;font-weight:800;font-size:clamp(10px,2.4vw,15px);color:#7a3d00;line-height:1}
 .big-die,.banner{position:absolute;inset:0;z-index:8;display:grid;place-items:center;background:rgba(20,30,50,.35);border-radius:18px}
@@ -296,10 +296,13 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .chick svg{width:100%;height:100%;filter:drop-shadow(0 3px 2px rgba(0,0,0,.25))}
 .chick.step svg{animation:waddle .26s}
 @keyframes waddle{50%{transform:translateY(-14%) rotate(-6deg)}}
-.arrow{position:absolute;z-index:4;display:grid;place-items:center;border:0;background:rgba(255,255,255,.88);border-radius:12px;margin:6%;width:88%;height:88%;padding:0;box-shadow:0 3px 0 rgba(0,0,0,.2);animation:pop .25s}
-.arrow:hover,.arrow:focus-visible{background:#fff;outline:3px solid #ffd84d}
-.arrow b{font-size:clamp(14px,3.4vw,22px);color:#1c2433;line-height:1}
-.arrow i{font-style:normal;font-size:clamp(11px,2.6vw,16px);color:#2c4fd6;line-height:1}
+.arrow{position:absolute;z-index:4;transform:translate(-50%,-50%);aspect-ratio:1;display:grid;place-items:center;border:2.5px solid #7a3d00;background:#ffd84d;border-radius:50%;padding:0;box-shadow:0 2px 0 rgba(0,0,0,.3);animation:apop .25s;cursor:pointer}
+.arrow .ah{position:absolute;inset:-34%;pointer-events:none}
+.arrow .ah::before{content:"";position:absolute;left:50%;top:0;transform:translateX(-50%);border-left:clamp(6px,1.7vw,10px) solid transparent;border-right:clamp(6px,1.7vw,10px) solid transparent;border-bottom:clamp(8px,2.3vw,13px) solid #7a3d00}
+.arrow:hover,.arrow:focus-visible{background:#fff3b0;outline:none}
+.arrow.sel{background:#ff8a1f;border-color:#fff}.arrow.sel b{color:#fff}.arrow.sel .ah::before{border-bottom-color:#ff8a1f}
+.arrow b{font-size:clamp(12px,3.2vw,20px);font-weight:800;color:#3b1d00;line-height:1}
+@keyframes apop{from{transform:translate(-50%,-50%) scale(.3);opacity:0}}
 @keyframes pop{from{transform:scale(.4);opacity:0}}
 .popup{position:absolute;z-index:5;font-weight:800;color:#ffd84d;-webkit-text-stroke:1.5px #7a3d00;font-size:clamp(20px,5vw,30px);pointer-events:none;animation:rise 1.4s forwards;display:flex;flex-direction:column;align-items:center}
 .popup svg{width:clamp(30px,7vw,46px);height:auto}
@@ -1067,8 +1070,9 @@ function showArrows(){
   const b=$("#egBoard"); b.querySelectorAll(".arrow,.pv").forEach(a=>a.remove());
   const [r,c]=curTeam().pos;
   DIRS.forEach(([dr,dc,ch],i)=>{ const nr=r+dr, nc=c+dc; if(!playable(nr,nc)) return;
-    const a=document.createElement("button"); a.className="arrow"+(eg.dir===i?" sel":""); a.style.cssText=cpos(nr,nc); a.setAttribute("aria-label","Hướng "+(i+1));
-    a.innerHTML=`<b>${i+1}</b><i>${ch}</i>`; a.onclick=()=>pickDir(i); b.appendChild(a); });
+    const a=document.createElement("button"); a.className="arrow"+(eg.dir===i?" sel":""); a.setAttribute("aria-label","Hướng "+(i+1));
+    a.style.cssText=`left:${(c+.5+dc*.68)/EG_COLS*100}%;top:${(r+.5+dr*.68)/EG_ROWS*100}%;width:${54/EG_COLS}%`;
+    a.innerHTML=`<span class="ah" style="transform:rotate(${Math.atan2(dc,-dr)*180/Math.PI}deg)"></span><b>${i+1}</b>`; a.onclick=()=>pickDir(i); b.appendChild(a); });
   if(eg.dir!=null){ straightPath(curTeam().pos,eg.dir,eg.roll).forEach(([pr,pc],j)=>{ const m=document.createElement("div"); m.className="pv"; m.style.cssText=cpos(pr,pc); m.innerHTML=`<span>${j+1}</span>`; b.appendChild(m); });
     $("#diceAct").innerHTML=`<button class="btn primary" id="goBtn">Đi hướng ${eg.dir+1} →</button>`; $("#goBtn").onclick=()=>egMove(eg.dir); }
   document.onkeydown=e=>{ if(eg&&eg.phase==="dir"&&/^[1-8]$/.test(e.key)){ const i=+e.key-1,[dr,dc]=DIRS[i]; if(playable(curTeam().pos[0]+dr,curTeam().pos[1]+dc)) pickDir(i); } else if(eg&&eg.phase==="dir"&&e.key==="Enter"&&eg.dir!=null) egMove(eg.dir); };
@@ -1186,7 +1190,7 @@ function route(){
 }
 window.addEventListener("hashchange",route);
 setAccent(accent); route();
-const APP_VERSION="17";
+const APP_VERSION="18";
 /* --- leaderboard (Google Sheets) --- */
 const SCORE_URL=""; // dán link Web app của Google Apps Script vào đây
 function award(state,game,raw,xp){
