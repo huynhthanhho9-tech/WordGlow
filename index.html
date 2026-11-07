@@ -916,7 +916,7 @@ const DIRS=[[-1,-1,"↖"],[-1,0,"↑"],[-1,1,"↗"],[0,-1,"←"],[0,1,"→"],[1,
 const PIPS={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
 const TEAM_COL=[["#ffd23f","#ffe680"],["#ff8fb8","#ffc2d9"],["#6ec3ff","#b5e0ff"],["#7ddc8a","#bff0c5"]];
 const STARTS=[[1,0],[1,8],[4,8],[4,0]];
-let eg=null, egToken=0, egSetup={teams:1,mode:"mcq",turns:10};
+let eg=null, egToken=0, egSetup={teams:1,mode:"mcq",turns:15};
 const CHICKC=(b,l)=>`<svg viewBox="0 0 64 64"><path d="M26 9c2-5 7-6 8-2 2-4 8-3 7 2 3 0 4 4 1 6H25c-3-1-2-6 1-6z" fill="#ff5a4e"/><ellipse cx="32" cy="38" rx="22" ry="21" fill="${b}"/><ellipse cx="32" cy="42" rx="14" ry="12" fill="${l}"/><path d="M11 36c-6 1-8 8-3 11 3-4 6-5 8-5z" fill="${b}" stroke="rgba(0,0,0,.12)"/><path d="M53 36c6 1 8 8 3 11-3-4-6-5-8-5z" fill="${b}" stroke="rgba(0,0,0,.12)"/><circle cx="24" cy="31" r="4" fill="#1c2433"/><circle cx="40" cy="31" r="4" fill="#1c2433"/><circle cx="25.3" cy="29.6" r="1.4" fill="#fff"/><circle cx="41.3" cy="29.6" r="1.4" fill="#fff"/><path d="M28 37h8l-4 6z" fill="#ff8a1f"/><circle cx="19" cy="38" r="3" fill="#ff9aa2" opacity=".7"/><circle cx="45" cy="38" r="3" fill="#ff9aa2" opacity=".7"/><path d="M25 58v4M39 58v4" stroke="#ff8a1f" stroke-width="3" stroke-linecap="round"/></svg>`;
 const CHICK=CHICKC("#ffd23f","#ffe680");
 const CLOUD='<svg viewBox="0 0 100 100" class="cloud"><g fill="#f4f1ff" stroke="#c9c0ef" stroke-width="3"><circle cx="32" cy="58" r="22"/><circle cx="68" cy="58" r="22"/><circle cx="50" cy="40" r="24"/><rect x="24" y="56" width="52" height="24" rx="12"/></g><circle cx="42" cy="36" r="6" fill="#fff" opacity=".9"/></svg>';
@@ -983,9 +983,7 @@ function setupHTML(best){
   return `<div class="dice-box eg-setup"><div style="width:84px;height:84px">${CHICK}</div><h2 style="margin:0">Gà Con Săn Trứng</h2>
     <p style="margin:0;color:var(--muted);max-width:52ch">Có ${EG_EGGS} quả trứng (1 đến 10 điểm) và vài hang thỏ bí mật giấu dưới mây. Trả lời đúng để đổ xúc xắc, chọn một trong 8 hướng, gà đi đúng số bước và mở mây trên đường đi. Rơi xuống hang thỏ sẽ chui sang hang bên kia!</p>
     <div class="set-row"><span>Số đội chơi</span><div class="segs">${[1,2,3,4].map(n=>opt("teams",n,n===1?"1 (tự chơi)":n+" đội")).join("")}</div></div>
-    <div class="set-row"><span>Cách trả lời</span><div class="segs">${opt("mode","mcq","Chọn đáp án")}${opt("mode","teacher","Nói, cô chấm")}</div></div>
     <div class="set-row"><span>Số lượt mỗi đội</span><div class="segs">${[5,8,10,15].map(n=>opt("turns",n,n+" lượt")).join("")}</div></div>
-    <p class="set-hint">${egSetup.mode==="teacher"?"Cô chiếu lên màn hình. Học sinh nói đáp án, cô bấm Xem đáp án rồi chấm Đúng hoặc Sai.":"Học sinh tự bấm chọn đáp án đúng trong 4 lựa chọn."}</p>
     ${best&&egSetup.teams===1?`<div style="color:var(--accent);font-weight:600">Điểm cao nhất của bạn: ${best}</div>`:""}
     <button class="btn primary" id="egStart" style="font-size:16px;padding:12px 26px">Bắt đầu chơi</button></div>
     <button class="g-back" id="gpick">← Chọn trò chơi khác</button>`;
@@ -1189,7 +1187,7 @@ function route(){
 }
 window.addEventListener("hashchange",route);
 setAccent(accent); route();
-const APP_VERSION="15";
+const APP_VERSION="16";
 /* --- leaderboard (Google Sheets) --- */
 const SCORE_URL=""; // dán link Web app của Google Apps Script vào đây
 function award(state,game,raw,xp){
