@@ -70,6 +70,11 @@ nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(-
 .prompt{font-size:13px;color:var(--muted);border-left:3px solid var(--line);padding-left:12px;margin:0 0 22px}
 .prompt b{color:var(--ink);font-weight:500}
 .passage p{font-family:var(--f-read);font-size:18px;line-height:1.95;margin:0 0 1.1em;max-width:68ch}
+.passage p.line{margin-bottom:.6em;padding-left:1.4em;text-indent:-1.4em}
+.passage .spk{font-family:var(--f-ui,inherit);color:var(--accent);font-size:.9em}
+.passage h4.conv{margin:1.2em 0 .5em;font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.passage h4.conv:first-child{margin-top:0}
+.lesson-audio{display:block;width:100%;margin:0 0 18px}
 .hl{background:linear-gradient(transparent 12%,var(--mark) 12%,var(--mark) 92%,transparent 92%);border-radius:3px;padding:0 2px;cursor:pointer;border-bottom:2px solid var(--mark-hot);transition:background .15s}
 .hl:hover{background:var(--mark-hot)}
 .hl.on{background:var(--mark-hot);box-shadow:0 0 0 2px var(--mark-hot)}
@@ -418,6 +423,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <div class="read">
       <article class="paper">
         <p class="prompt" id="prompt"></p>
+        <audio id="lessonAudio" class="lesson-audio" controls preload="metadata" hidden></audio>
         <div class="passage" id="passage"></div>
         <div class="btnrow" style="margin-top:8px">
           <button class="btn" id="readAll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg><span>Nghe cả bài</span></button>
@@ -572,6 +578,96 @@ const LESSONS = [
     25:{w:"fill with", ipa:"/fɪl wɪð/", type:"cụm động từ", vi:"đổ đầy bằng (cái gì)", note:"Trong bài: are filled with drinks = được đổ đầy đồ uống."},
     26:{w:"the cycle", ipa:"/ðə ˈsaɪkl/", type:"danh từ", vi:"chu trình, vòng tuần hoàn", note:"so the cycle can begin again = để chu trình bắt đầu lại."}
   }
+},
+{
+  id:"listening-u2-track15",
+  cls:"ielts",
+  skill:"listening",
+  unit:"Unit 2",
+  kind:"IELTS Listening · Unit 2 · Track 15",
+  title:"At the Sports Centre and the Bank",
+  audio:"audio/track-15.mp3",
+  prompt:"Nghe hai đoạn hội thoại ngắn: hỏi về <b>tiện ích của trung tâm thể thao</b> và <b>mở tài khoản ngân hàng</b>. Nghe trước một lần, sau đó bấm vào các cụm từ được tô màu để xem nghĩa.",
+  paragraphs:[
+"## Conversation 1",
+"Man: Good morning, how can I help you?",
+"Woman: Hello, I’d like some information about your [[facilities|1]].",
+"Man: OK, well we have a swimming pool, [[squash courts|2]], a gym and we have [[a couple of|3]] outdoor [[tennis courts|4]] too. You [[may have seen|5]] them on the left as you came in. Now, our website tells you how you can become a member and how much the [[yearly fee|6]] is. Do you want to [[make a note|7]] of the address?",
+"## Conversation 2",
+"Bank clerk: Good afternoon, can I help you?",
+"Customer: I’d like to open a new account please.",
+"Bank clerk: Certainly – now, is it [[a basic account|8]] you’re looking to open or [[a savings account|9]]?",
+"Customer: A savings account.",
+"Bank clerk: Right – we can [[complete|10]] your [[application|11]] online. I’ll just [[get the form up on screen|12]] now. It [[won’t take long|13]]."
+  ],
+  words:{
+    1:{w:"facilities", ipa:"/fəˈsɪlətiz/", type:"danh từ (số nhiều)", vi:"cơ sở vật chất, tiện ích", note:"Số ít: facility. Hay gặp trong IELTS Listening Part 1: sports facilities, library facilities."},
+    2:{w:"squash courts", ipa:"/skwɒʃ kɔːts/", type:"cụm danh từ", vi:"sân bóng quần", note:"squash = môn bóng quần (đánh bóng vào tường). court = sân (tennis court, basketball court)."},
+    3:{w:"a couple of", ipa:"/ə ˈkʌpl əv/", type:"cụm từ chỉ số lượng", vi:"hai, một vài", note:"a couple of + danh từ số nhiều: a couple of tennis courts = hai, ba sân tennis."},
+    4:{w:"tennis courts", ipa:"/ˈtenɪs kɔːts/", type:"cụm danh từ", vi:"sân quần vợt", note:"outdoor tennis courts = sân tennis ngoài trời; ngược lại là indoor."},
+    5:{w:"may have seen", ipa:"/meɪ həv siːn/", type:"cấu trúc", vi:"có thể (bạn) đã nhìn thấy", note:"may have + V3 = đoán về việc có thể đã xảy ra trong quá khứ."},
+    6:{w:"yearly fee", ipa:"/ˈjɪəli fiː/", type:"cụm danh từ", vi:"phí hằng năm", note:"Còn gọi là annual fee. fee = khoản phí (membership fee = phí hội viên)."},
+    7:{w:"make a note", ipa:"/meɪk ə nəʊt/", type:"cụm động từ", vi:"ghi chú lại", note:"make a note of something = ghi lại điều gì để nhớ."},
+    8:{w:"a basic account", ipa:"/ə ˈbeɪsɪk əˈkaʊnt/", type:"cụm danh từ", vi:"tài khoản cơ bản (tài khoản thanh toán thường)", note:"Dùng để gửi, rút tiền hằng ngày, khác với tài khoản tiết kiệm."},
+    9:{w:"a savings account", ipa:"/ə ˈseɪvɪŋz əˈkaʊnt/", type:"cụm danh từ", vi:"tài khoản tiết kiệm", note:"Chú ý có s: savings account, không nói saving account."},
+    10:{w:"complete", ipa:"/kəmˈpliːt/", type:"động từ", vi:"hoàn thành, điền đầy đủ (đơn, mẫu)", note:"complete an application / a form = điền đơn."},
+    11:{w:"application", ipa:"/ˌæplɪˈkeɪʃn/", type:"danh từ", vi:"đơn đăng ký, hồ sơ", note:"Động từ: apply (for). application form = mẫu đơn đăng ký."},
+    12:{w:"get the form up on screen", ipa:"/ɡet ðə fɔːm ʌp ɒn skriːn/", type:"cụm động từ", vi:"mở mẫu đơn lên màn hình", note:"get something up on screen = mở, hiển thị cái gì lên màn hình máy tính."},
+    13:{w:"won’t take long", ipa:"/wəʊnt teɪk lɒŋ/", type:"cụm từ", vi:"sẽ không mất nhiều thời gian", note:"It won’t take long = Nhanh thôi. take + thời gian = mất bao lâu."}
+  }
+},
+{
+  id:"listening-u2-track21",
+  cls:"ielts",
+  skill:"listening",
+  unit:"Unit 2",
+  kind:"IELTS Listening · Unit 2 · Track 21",
+  title:"A Bike Tour in Orientation Week",
+  audio:"audio/track-21.mp3",
+  prompt:"Jon và Rita nói về <b>chuyến đạp xe tham quan thành phố</b> trong tuần lễ đầu tiên ở đại học. Chú ý các <b>bẫy</b> hay gặp ở Part 1: tên đường bị đánh vần (Barkway, không phải Barclay), số tiền ($15, không phải $50) và địa chỉ website.",
+  paragraphs:[
+"Jon: So, how’s your very first week at university going, Rita? It’s [[Orientation|1]] Week for all you new students, isn’t it?",
+"Rita: Yes, that’s right – Orientation Week. Yes, it’s great fun – there are so many different events going on to help us make friends and [[find our way around|2]] the university. And to get around the city, come to that! But you’ll remember all that, Jon. [[You were a new student once!|3]]",
+"Jon: That’s true. I remember I went on a walking tour of the city on my first day. And I think some students did a bus tour.",
+"Rita: Well, I did a bike tour – I was sent an email about it and I decided to [[sign up|4]]. There were only eight places and there were seven other names on the list already, so [[I got the very last place|5]].",
+"Jon: I didn’t know you had a bike.",
+"Rita: I don’t have a bike but that didn’t matter. We all [[hired|6]] them – from a little cycle hire shop on Barkway Street. You probably know the place.",
+"Jon: Barclay Street? Do you mean the ‘Barclay Street’ [[on campus|7]]?",
+"Rita: No, it’s Barkway Street – B-A-R-K-W-A-Y. Number 22 Barkway Street, to be exact. It was great – we could choose a [[traditional bike|8]] or an electric one.",
+"Jon: So I [[take it|9]] you went electric!",
+"Rita: Yes, of course I did! Well, think about it – why ride a traditional bike when you can get around the city much faster on an electric one! And because there was a group of us, it wasn’t too expensive. In fact the [[cycle hire|10]] was only a $120 for [[the whole group|11]]. So the cost was only $15 [[per person|12]] and that was for three whole hours!",
+"Jon: Did you say $50?",
+"Rita: No, $15. So I thought it was really quite cheap. And I didn’t have to [[bring along|13]] a helmet to wear either. That was [[included|14]] – and we also got a [[lock|15]], so it was easy to [[park our bikes|16]] safely when we wanted to stop and [[take a break|17]]!",
+"Jon: [[Sounds good|18]]. Have you got the website address of the place you got your bike from? I quite like the idea of doing a bike tour.",
+"Rita: Yes – it’s a really easy one to remember. It’s tradelectric.com",
+"Jon: Can you say that again?",
+"Rita: tradelectric – T-R-A-D-E-L-E-C-T-R-I-C all one word dot com.",
+"Jon: Thanks, Rita.",
+"Rita: No problem. Hey, maybe we can do a bike tour together. I’d love to cycle [[as far as the harbour|19]] next time.",
+"Jon: Great! [[That’s a date then|20]]!"
+  ],
+  words:{
+    1:{w:"Orientation Week", ipa:"/ˌɔːriənˈteɪʃn wiːk/", type:"cụm danh từ", vi:"tuần lễ định hướng (cho sinh viên mới)", note:"Tuần đầu tiên ở đại học, có nhiều hoạt động giúp sinh viên mới làm quen trường lớp."},
+    2:{w:"find our way around", ipa:"/faɪnd ˈaʊə weɪ əˈraʊnd/", type:"cụm động từ", vi:"biết đường đi, làm quen với nơi mới", note:"find your way around + nơi chốn = biết cách đi lại ở đâu đó."},
+    3:{w:"You were a new student once!", ipa:"/juː wɜːr ə njuː ˈstjuːdnt wʌns/", type:"câu nói", vi:"Bạn cũng từng là sinh viên mới mà!", note:"once ở cuối câu = đã từng, một thời (trong quá khứ)."},
+    4:{w:"sign up", ipa:"/saɪn ʌp/", type:"cụm động từ", vi:"đăng ký (tham gia)", note:"sign up for a tour / a course = đăng ký một chuyến đi, một khóa học."},
+    5:{w:"I got the very last place", ipa:"/aɪ ɡɒt ðə ˈveri lɑːst pleɪs/", type:"câu nói", vi:"Mình giành được suất cuối cùng", note:"place ở đây = suất, chỗ. the very last = cái cuối cùng luôn (nhấn mạnh)."},
+    6:{w:"hire", ipa:"/haɪə/", type:"động từ", vi:"thuê (đồ vật, trong thời gian ngắn)", note:"Trong bài: We all hired them. Anh-Anh dùng hire a bike, Anh-Mỹ hay dùng rent."},
+    7:{w:"on campus", ipa:"/ɒn ˈkæmpəs/", type:"cụm từ", vi:"trong khuôn viên trường", note:"Ngược lại: off campus = bên ngoài khuôn viên trường."},
+    8:{w:"traditional bike", ipa:"/trəˈdɪʃənl baɪk/", type:"cụm danh từ", vi:"xe đạp thường (đạp bằng chân)", note:"Đối lập với an electric bike (xe đạp điện)."},
+    9:{w:"take it", ipa:"/teɪk ɪt/", type:"cụm từ", vi:"(tôi) đoán là, chắc là", note:"I take it (that) … = Tôi đoán là … Trong bài: So I take it you went electric!"},
+    10:{w:"cycle hire", ipa:"/ˈsaɪkl haɪə/", type:"cụm danh từ", vi:"việc thuê xe đạp, dịch vụ cho thuê xe đạp", note:"a cycle hire shop = tiệm cho thuê xe đạp."},
+    11:{w:"the whole group", ipa:"/ðə həʊl ɡruːp/", type:"cụm danh từ", vi:"cả nhóm", note:"whole /həʊl/ đọc giống hole (cái lỗ)."},
+    12:{w:"per person", ipa:"/pə ˈpɜːsn/", type:"cụm từ", vi:"mỗi người", note:"$15 per person = 15 đô mỗi người. Chú ý: Part 1 hay đổi số để gài bẫy ($15 hay $50)."},
+    13:{w:"bring along", ipa:"/brɪŋ əˈlɒŋ/", type:"cụm động từ", vi:"mang theo", note:"bring along a helmet = mang theo mũ bảo hiểm."},
+    14:{w:"included", ipa:"/ɪnˈkluːdɪd/", type:"tính từ / động từ (V3)", vi:"đã được bao gồm (trong giá)", note:"That was included = cái đó đã tính trong giá rồi, không phải trả thêm."},
+    15:{w:"lock", ipa:"/lɒk/", type:"danh từ", vi:"ổ khóa", note:"Động từ lock = khóa lại (lock your bike)."},
+    16:{w:"park our bikes", ipa:"/pɑːk ˈaʊə baɪks/", type:"cụm động từ", vi:"đỗ xe đạp của chúng mình", note:"park = đỗ xe (park a car, park a bike)."},
+    17:{w:"take a break", ipa:"/teɪk ə breɪk/", type:"cụm động từ", vi:"nghỉ giải lao, nghỉ một lát", note:"Tương tự: have a break, have a rest."},
+    18:{w:"Sounds good", ipa:"/saʊndz ɡʊd/", type:"câu nói", vi:"Nghe hay đấy", note:"Câu đáp lại thân mật khi đồng ý hoặc thấy ý tưởng hay."},
+    19:{w:"as far as the harbour", ipa:"/əz fɑːr əz ðə ˈhɑːbə/", type:"cụm từ", vi:"xa tới tận bến cảng", note:"as far as + nơi chốn = đi xa đến tận đâu. harbour (Anh-Mỹ: harbor) = bến cảng."},
+    20:{w:"That’s a date then!", ipa:"/ðæts ə deɪt ðen/", type:"câu nói", vi:"Vậy hẹn nhau thế nhé!", note:"Câu thân mật để chốt lịch hẹn, không nhất thiết là hẹn hò."}
+  }
 }
 ];
 
@@ -646,8 +742,14 @@ function progress(){
 
 /* --- reading tab --- */
 function renderPassage(){
-  $("#passage").innerHTML=L.paragraphs.map(p=>"<p>"+esc(p).replace(/\[\[([^|\]]+)\|(\d+)\]\]/g,
-    (m,t,n)=>`<span class="hl" role="button" tabindex="0" data-id="${n}">${t}<sup>${n}</sup></span>`)+"</p>").join("");
+  $("#passage").innerHTML=L.paragraphs.map(p=>{
+    if(p.startsWith("## ")) return `<h4 class="conv">${esc(p.slice(3))}</h4>`;
+    let s=esc(p).replace(/\[\[([^|\]]+)\|(\d+)\]\]/g,(m,t,n)=>`<span class="hl" role="button" tabindex="0" data-id="${n}">${t}<sup>${n}</sup></span>`);
+    const sp=L.audio&&s.match(/^([A-Z][A-Za-z ]{0,14}):\s/); if(sp) return `<p class="line"><b class="spk">${sp[1]}:</b> ${s.slice(sp[0].length)}</p>`;
+    return "<p>"+s+"</p>"; }).join("");
+  const au=$("#lessonAudio"); if(L.audio){ au.hidden=false; if(!au.src.endsWith(L.audio)) au.src=L.audio; } else { au.hidden=true; au.pause(); au.removeAttribute("src"); }
+  $("#readAll").parentElement.hidden=!!L.audio;
+  document.querySelector('[data-tab="read"]').textContent=L.audio?"Bài nghe":"Bài đọc";
   $("#passage").querySelectorAll(".hl").forEach(el=>{
     const go=()=>{ select(+el.dataset.id); speak(L.words[el.dataset.id].w); };
     el.onclick=go; el.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();go();} };
@@ -1175,7 +1277,7 @@ function renderSkillBar(){
   bar.querySelectorAll(".skill").forEach(b=>b.onclick=()=>{ location.hash=b.dataset.skill; });
   if(skill) setSkill(skill);
 }
-function route(){
+function route(){ const _au=document.getElementById("lessonAudio"); if(_au) _au.pause();
   if(skillBarFor!==myClass()) renderSkillBar();
   const id=location.hash.slice(1);
   if(id==="xep-hang"){ stopGame(); setSkill(null); $("#home").hidden=true; $("#lessonView").hidden=true; $("#rankView").hidden=false; setTimeout(loadRank); window.scrollTo(0,0); return; }
@@ -1190,7 +1292,7 @@ function route(){
 }
 window.addEventListener("hashchange",route);
 setAccent(accent); route();
-const APP_VERSION="18";
+const APP_VERSION="19";
 /* --- leaderboard (Google Sheets) --- */
 const SCORE_URL=""; // dán link Web app của Google Apps Script vào đây
 function award(state,game,raw,xp){

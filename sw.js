@@ -1,5 +1,5 @@
 // Đổi số phiên bản mỗi khi cập nhật bài để điện thoại tải bản mới.
-const VERSION = "v18";
+const VERSION = "v19";
 const CORE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(CORE.map(u => new Request(u, {cache: "reload"}))))); self.skipWaiting(); });
 self.addEventListener("activate", e => {
@@ -9,6 +9,7 @@ self.addEventListener("activate", e => {
 self.addEventListener("fetch", e => {
   const req = e.request;
   if (req.method !== "GET") return;
+  if (/\.mp3($|\?)/.test(req.url)) return; // file nghe: lấy thẳng từ mạng
   if (req.mode === "navigate") {
     e.respondWith(fetch(req, {cache: "no-store"}).then(r => { const copy = r.clone(); caches.open(VERSION).then(c => c.put("index.html", copy)); return r; })
       .catch(() => caches.match("index.html")));
