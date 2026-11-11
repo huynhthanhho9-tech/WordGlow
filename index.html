@@ -668,6 +668,38 @@ const LESSONS = [
     19:{w:"as far as the harbour", ipa:"/əz fɑːr əz ðə ˈhɑːbə/", type:"cụm từ", vi:"xa tới tận bến cảng", note:"as far as + nơi chốn = đi xa đến tận đâu. harbour (Anh-Mỹ: harbor) = bến cảng."},
     20:{w:"That’s a date then!", ipa:"/ðæts ə deɪt ðen/", type:"câu nói", vi:"Vậy hẹn nhau thế nhé!", note:"Câu thân mật để chốt lịch hẹn, không nhất thiết là hẹn hò."}
   }
+},
+{
+  id:"b1-unit13-mixed-feelings",
+  cls:"b1",
+  skill:"vocabulary",
+  unit:"Unit 13",
+  kind:"B1 · Vocabulary · Unit 13",
+  title:"Mixed Feelings",
+  prompt:"Đọc đoạn văn kể về <b>ngày đầu tiên đi làm</b>. Chú ý các tính từ chỉ <b>cảm xúc</b> (hopeful, scared, amazed, confused, embarrassed, stressed). Bấm vào từ được tô màu để xem nghĩa và nghe phát âm.",
+  paragraphs:[
+"Last Monday was my first day at a new [[company|1]], and I had very [[mixed feelings|2]]. In the morning, I was [[hopeful|3]] because I had wanted this job for a long time, but I was also a little [[scared|4]] of [[making mistakes|5]]. When I [[arrived|6]], the office was so big and [[modern|7]] that I was [[amazed|8]]. However, my [[manager|9]] [[explained|10]] my [[tasks|11]] very [[quickly|12]], and I felt [[confused|13]]. Then I called a [[client|14]] by the wrong name, and I was really [[embarrassed|15]]. By [[lunchtime|16]], I was [[stressed|17]] because I had so much to [[learn|18]]."
+  ],
+  words:{
+    1:{w:"company", ipa:"/ˈkʌmpəni/", type:"danh từ", vi:"công ty", note:"Số nhiều: companies. a new company = một công ty mới."},
+    2:{w:"mixed feelings", ipa:"/mɪkst ˈfiːlɪŋz/", type:"cụm danh từ", vi:"cảm xúc lẫn lộn", note:"have mixed feelings (about something) = vừa vui vừa lo, cảm xúc trái ngược nhau."},
+    3:{w:"hopeful", ipa:"/ˈhəʊpfl/", type:"tính từ", vi:"đầy hy vọng", note:"Danh từ: hope. Trái nghĩa: hopeless (tuyệt vọng)."},
+    4:{w:"scared", ipa:"/skeəd/", type:"tính từ", vi:"sợ, lo sợ", note:"be scared of + V-ing/danh từ: scared of making mistakes = sợ mắc lỗi."},
+    5:{w:"make mistakes", ipa:"/meɪk mɪˈsteɪks/", type:"cụm động từ", vi:"mắc lỗi, phạm sai lầm", note:"Dùng make, không dùng do: make a mistake. Sau of dùng V-ing: of making mistakes."},
+    6:{w:"arrive", ipa:"/əˈraɪv/", type:"động từ", vi:"đến nơi", note:"arrive at + nơi nhỏ (the office), arrive in + thành phố, đất nước. Quá khứ: arrived."},
+    7:{w:"modern", ipa:"/ˈmɒdn/", type:"tính từ", vi:"hiện đại", note:"Chú ý đọc /ˈmɒdn/, trọng âm ở âm đầu."},
+    8:{w:"amazed", ipa:"/əˈmeɪzd/", type:"tính từ", vi:"kinh ngạc, rất ngạc nhiên", note:"-ed chỉ cảm xúc của người (I was amazed), -ing chỉ tính chất của vật (The office was amazing)."},
+    9:{w:"manager", ipa:"/ˈmænɪdʒə/", type:"danh từ", vi:"người quản lý, quản lý", note:"Động từ: manage (quản lý)."},
+    10:{w:"explain", ipa:"/ɪkˈspleɪn/", type:"động từ", vi:"giải thích", note:"explain something to somebody: explained my tasks to me. Quá khứ: explained."},
+    11:{w:"task", ipa:"/tɑːsk/", type:"danh từ", vi:"nhiệm vụ, công việc được giao", note:"Số nhiều: tasks /tɑːsks/."},
+    12:{w:"quickly", ipa:"/ˈkwɪkli/", type:"trạng từ", vi:"một cách nhanh chóng", note:"Tính từ: quick. Trạng từ đứng sau động từ: explained … very quickly."},
+    13:{w:"confused", ipa:"/kənˈfjuːzd/", type:"tính từ", vi:"bối rối, không hiểu rõ", note:"I felt confused = tôi thấy rối. Còn confusing = gây khó hiểu (a confusing task)."},
+    14:{w:"client", ipa:"/ˈklaɪənt/", type:"danh từ", vi:"khách hàng (của công ty, luật sư, v.v.)", note:"Gần nghĩa: customer (khách mua hàng ở cửa hàng)."},
+    15:{w:"embarrassed", ipa:"/ɪmˈbærəst/", type:"tính từ", vi:"xấu hổ, ngượng", note:"Viết có rr và ss. Cảm thấy ngượng vì làm điều gì sai trước mặt người khác."},
+    16:{w:"lunchtime", ipa:"/ˈlʌntʃtaɪm/", type:"danh từ", vi:"giờ ăn trưa", note:"By lunchtime = trước hoặc vào lúc giờ ăn trưa."},
+    17:{w:"stressed", ipa:"/strest/", type:"tính từ", vi:"căng thẳng", note:"-ed đọc /t/. Danh từ: stress. stressful = gây căng thẳng."},
+    18:{w:"learn", ipa:"/lɜːn/", type:"động từ", vi:"học, học hỏi", note:"so much to learn = có quá nhiều thứ phải học."}
+  }
 }
 ];
 
@@ -1221,7 +1253,7 @@ function showTab(t){
 /* Unit trong từng mục. Bài học thuộc unit nào thì thêm unit:"Unit 2" vào bài đó. */
 const UNITS={
   ielts:{ listening:["Unit 2"] },
-  b1:{ vocabulary:["Unit 12"] }
+  b1:{ vocabulary:["Unit 12","Unit 13"] }
 };
 /* Lớp học: mỗi lớp có mã riêng (lưu dạng mã hóa). Bài học thuộc lớp nào thì ghi cls:"ielts" hoặc cls:"b1". */
 const CLASSES={ ielts:{name:"IELTS", hash:"317c83e5"}, b1:{name:"B1", hash:"a9c78b91"} };
@@ -1292,7 +1324,7 @@ function route(){ const _au=document.getElementById("lessonAudio"); if(_au) _au.
 }
 window.addEventListener("hashchange",route);
 setAccent(accent); route();
-const APP_VERSION="19";
+const APP_VERSION="20";
 /* --- leaderboard (Google Sheets) --- */
 const SCORE_URL=""; // dán link Web app của Google Apps Script vào đây
 function award(state,game,raw,xp){
