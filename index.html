@@ -74,6 +74,10 @@ nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(-
 .passage .spk{font-family:var(--f-ui,inherit);color:var(--accent);font-size:.9em}
 .passage h4.conv{margin:1.2em 0 .5em;font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 .passage h4.conv:first-child{margin-top:0}
+.passage .sq{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:1.4em 0 .6em;padding:10px 14px;border-left:4px solid var(--accent);background:var(--bg);border-radius:8px}
+.passage .sq:first-child{margin-top:0}
+.passage .sq b{color:var(--accent);font-size:14px;text-transform:uppercase;letter-spacing:.05em}
+.passage .sq span{flex:1;min-width:12em;font-style:italic;font-weight:500}
 .lesson-audio{display:block;width:100%;margin:0 0 18px}
 .hl{background:linear-gradient(transparent 12%,var(--mark) 12%,var(--mark) 92%,transparent 92%);border-radius:3px;padding:0 2px;cursor:pointer;border-bottom:2px solid var(--mark-hot);transition:background .15s}
 .hl:hover{background:var(--mark-hot)}
@@ -700,6 +704,61 @@ const LESSONS = [
     17:{w:"stressed", ipa:"/strest/", type:"tính từ", vi:"căng thẳng", note:"-ed đọc /t/. Danh từ: stress. stressful = gây căng thẳng."},
     18:{w:"learn", ipa:"/lɜːn/", type:"động từ", vi:"học, học hỏi", note:"so much to learn = có quá nhiều thứ phải học."}
   }
+},
+{
+  id:"speaking-u2-places-buildings",
+  cls:"ielts",
+  skill:"speaking",
+  unit:"Unit 2",
+  kind:"IELTS Speaking Part 1 · Unit 2",
+  title:"Places and Buildings",
+  prompt:"Ba câu hỏi Part 1 về <b>thị trấn, quê hương</b> và câu trả lời mẫu. Bấm vào cụm từ được tô màu để xem nghĩa, nghe phát âm, rồi thử tự trả lời bằng các cụm từ đó.",
+  paragraphs:[
+"### Question 1|Can you describe the town where you grew up?",
+"Yes, [[of course|1]]. I grew up in a small town [[located in|2]] the [[northern part|3]] of my country. It’s [[surrounded by|4]] rivers and [[rice fields|5]], so the [[atmosphere|6]] is quite [[peaceful|7]] and the air is very fresh. The town isn’t very [[developed|8]] [[compared to|9]] big cities, but it [[has everything people need|10]] – local markets, schools, and even a small hospital. What I like most is [[the strong sense of community|11]]; everyone knows each other, and life moves at a slower, more [[relaxing pace|12]]. Although it’s not very modern, it’s a great place to [[grow up|13]].",
+"### Question 2|Where do young people in your town meet their friends?",
+"Well, most young people in my town usually [[hang out|14]] with their friends at coffee shops or local parks. There aren’t many [[entertainment centers|15]], so cafes [[have kind of become|16]] [[the go-to places|17]] to [[socialize|18]]. On weekends, some of them might go to the cinema or play sports at the [[community stadium|19]]. Social media also [[plays a big role|20]] – sometimes they meet online before deciding where to go in person. [[Overall|21]], they prefer [[casual|22]] and [[affordable|23]] [[spots|24]] where they can relax and chat.",
+"### Question 3|How has your town changed in the last 10 years?",
+"[[Over the past 10 years|25]], my town has changed [[quite a lot|26]]. There are [[definitely|27]] more buildings now, especially apartments and shopping centers. Some old roads [[have been expanded|28]], which helps [[reduce traffic|29]] [[during rush hour|30]]. Also, new cafes and restaurants have opened, making the town more [[lively|31]] and modern. However, I think it’s become a bit noisier and more [[crowded|32]] than before. [[Even though|33]] the changes [[bring more convenience|34]], I sometimes [[miss the peaceful atmosphere|35]] we [[used to have|36]]."
+  ],
+  words:{
+    1:{w:"of course", ipa:"/əv kɔːs/", type:"cụm từ", vi:"tất nhiên, dĩ nhiên", note:"Mở đầu câu trả lời tự nhiên khi giám khảo hỏi Can you…?"},
+    2:{w:"located in", ipa:"/ləʊˈkeɪtɪd ɪn/", type:"cụm tính từ", vi:"nằm ở, tọa lạc ở", note:"a town located in the north = một thị trấn nằm ở phía bắc."},
+    3:{w:"northern part", ipa:"/ˈnɔːðən pɑːt/", type:"cụm danh từ", vi:"phần phía bắc, miền bắc", note:"Tương tự: southern /ˈsʌðən/, eastern, western part."},
+    4:{w:"surrounded by", ipa:"/səˈraʊndɪd baɪ/", type:"cụm tính từ", vi:"được bao quanh bởi", note:"surrounded by mountains / rice fields / rivers."},
+    5:{w:"rice fields", ipa:"/raɪs fiːldz/", type:"cụm danh từ", vi:"cánh đồng lúa", note:"Còn gọi là paddy fields."},
+    6:{w:"atmosphere", ipa:"/ˈætməsfɪə/", type:"danh từ", vi:"bầu không khí (cảm giác chung của một nơi)", note:"a peaceful / lively / friendly atmosphere."},
+    7:{w:"peaceful", ipa:"/ˈpiːsfl/", type:"tính từ", vi:"yên bình", note:"Danh từ: peace."},
+    8:{w:"developed", ipa:"/dɪˈveləpt/", type:"tính từ", vi:"phát triển", note:"-ed đọc /t/. Trái nghĩa: underdeveloped (kém phát triển)."},
+    9:{w:"compared to", ipa:"/kəmˈpeəd tə/", type:"cụm giới từ", vi:"so với", note:"compared to / compared with big cities = so với các thành phố lớn."},
+    10:{w:"has everything people need", ipa:"/hæz ˈevriθɪŋ ˈpiːpl niːd/", type:"cụm từ", vi:"có đủ mọi thứ người dân cần", note:"Cách nói gọn, tự nhiên trước khi liệt kê ví dụ (markets, schools…)."},
+    11:{w:"the strong sense of community", ipa:"/ðə strɒŋ sens əv kəˈmjuːnəti/", type:"cụm danh từ", vi:"tinh thần cộng đồng gắn bó", note:"a sense of community = cảm giác mọi người gắn kết với nhau. Cụm ăn điểm Lexical Resource."},
+    12:{w:"relaxing pace", ipa:"/rɪˈlæksɪŋ peɪs/", type:"cụm danh từ", vi:"nhịp sống thư thả", note:"pace of life = nhịp sống. life moves at a slower pace = cuộc sống chậm rãi hơn."},
+    13:{w:"grow up", ipa:"/ɡrəʊ ʌp/", type:"cụm động từ", vi:"lớn lên", note:"Quá khứ: grew up. a great place to grow up = nơi tuyệt vời để lớn lên."},
+    14:{w:"hang out", ipa:"/hæŋ aʊt/", type:"cụm động từ", vi:"đi chơi, tụ tập", note:"hang out with friends at + nơi chốn. Rất tự nhiên trong Speaking."},
+    15:{w:"entertainment centers", ipa:"/ˌentəˈteɪnmənt ˈsentəz/", type:"cụm danh từ", vi:"trung tâm giải trí", note:"Anh-Anh viết centres, Anh-Mỹ viết centers."},
+    16:{w:"have kind of become", ipa:"/həv kaɪnd əv bɪˈkʌm/", type:"cụm động từ", vi:"gần như đã trở thành", note:"kind of = kiểu như, phần nào (văn nói). Giúp câu trả lời tự nhiên hơn."},
+    17:{w:"the go-to places", ipa:"/ðə ˈɡəʊ tuː ˈpleɪsɪz/", type:"cụm danh từ", vi:"những nơi được chọn đến đầu tiên, chỗ quen thuộc", note:"go-to (tính từ) = lựa chọn hàng đầu: my go-to cafe."},
+    18:{w:"socialize", ipa:"/ˈsəʊʃəlaɪz/", type:"động từ", vi:"giao lưu, gặp gỡ mọi người", note:"Anh-Anh: socialise. Danh từ: socializing."},
+    19:{w:"community stadium", ipa:"/kəˈmjuːnəti ˈsteɪdiəm/", type:"cụm danh từ", vi:"sân vận động của địa phương", note:"stadium đọc /ˈsteɪdiəm/, không đọc “xta-di-um”."},
+    20:{w:"play a big role", ipa:"/pleɪ ə bɪɡ rəʊl/", type:"cụm động từ", vi:"đóng vai trò lớn", note:"play a big / an important role in something."},
+    21:{w:"Overall", ipa:"/ˌəʊvərˈɔːl/", type:"trạng từ", vi:"nhìn chung, tóm lại", note:"Dùng để kết câu trả lời: Overall, …"},
+    22:{w:"casual", ipa:"/ˈkæʒuəl/", type:"tính từ", vi:"thoải mái, bình dân, không trang trọng", note:"casual clothes, a casual place."},
+    23:{w:"affordable", ipa:"/əˈfɔːdəbl/", type:"tính từ", vi:"giá cả phải chăng", note:"Động từ: afford (đủ tiền để mua). Hay dùng hơn cheap."},
+    24:{w:"spots", ipa:"/spɒts/", type:"danh từ", vi:"địa điểm, chỗ", note:"spot (văn nói) = place: a popular spot, a good spot to relax."},
+    25:{w:"Over the past 10 years", ipa:"/ˈəʊvə ðə pɑːst ten jɪəz/", type:"cụm trạng từ", vi:"trong 10 năm qua", note:"Đi với thì hiện tại hoàn thành: … my town has changed."},
+    26:{w:"quite a lot", ipa:"/kwaɪt ə lɒt/", type:"cụm trạng từ", vi:"khá nhiều", note:"changed quite a lot = thay đổi khá nhiều."},
+    27:{w:"definitely", ipa:"/ˈdefɪnətli/", type:"trạng từ", vi:"chắc chắn, rõ ràng là", note:"Chú ý cách viết: definitely (không phải definately)."},
+    28:{w:"have been expanded", ipa:"/həv biːn ɪkˈspændɪd/", type:"động từ (bị động)", vi:"đã được mở rộng", note:"Hiện tại hoàn thành bị động: have been + V3. expand = mở rộng."},
+    29:{w:"reduce traffic", ipa:"/rɪˈdjuːs ˈtræfɪk/", type:"cụm động từ", vi:"giảm lưu lượng xe cộ, giảm kẹt xe", note:"helps reduce traffic = giúp giảm kẹt xe (help + V nguyên mẫu)."},
+    30:{w:"during rush hour", ipa:"/ˈdjʊərɪŋ rʌʃ ˈaʊə/", type:"cụm trạng từ", vi:"vào giờ cao điểm", note:"rush hour = giờ cao điểm (sáng đi làm, chiều tan tầm)."},
+    31:{w:"lively", ipa:"/ˈlaɪvli/", type:"tính từ", vi:"sôi động, nhộn nhịp", note:"Đây là tính từ dù có đuôi -ly: a lively town."},
+    32:{w:"crowded", ipa:"/ˈkraʊdɪd/", type:"tính từ", vi:"đông đúc", note:"Danh từ: crowd (đám đông)."},
+    33:{w:"Even though", ipa:"/ˈiːvn ðəʊ/", type:"liên từ", vi:"mặc dù", note:"Even though + mệnh đề. Mạnh hơn although."},
+    34:{w:"bring more convenience", ipa:"/brɪŋ mɔː kənˈviːniəns/", type:"cụm động từ", vi:"mang lại nhiều tiện lợi hơn", note:"convenience (danh từ) = sự tiện lợi; convenient (tính từ)."},
+    35:{w:"miss the peaceful atmosphere", ipa:"/mɪs ðə ˈpiːsfl ˈætməsfɪə/", type:"cụm động từ", vi:"nhớ bầu không khí yên bình", note:"miss = nhớ (cái gì đã mất, không còn)."},
+    36:{w:"used to have", ipa:"/juːst tə hæv/", type:"cấu trúc", vi:"đã từng có (nay không còn)", note:"used to + V nguyên mẫu = thói quen, trạng thái trong quá khứ. used to đọc /juːst tə/."}
+  }
 }
 ];
 
@@ -775,6 +834,7 @@ function progress(){
 /* --- reading tab --- */
 function renderPassage(){
   $("#passage").innerHTML=L.paragraphs.map(p=>{
+    if(p.startsWith("### ")){ const [lab,q]=p.slice(4).split("|"); return `<div class="sq"><b>${esc(lab)}</b><span>${esc(q||"")}</span><button class="icon-btn" data-sayq="${esc(q||lab)}" aria-label="Nghe câu hỏi">${ICON_PLAY}</button></div>`; }
     if(p.startsWith("## ")) return `<h4 class="conv">${esc(p.slice(3))}</h4>`;
     let s=esc(p).replace(/\[\[([^|\]]+)\|(\d+)\]\]/g,(m,t,n)=>`<span class="hl" role="button" tabindex="0" data-id="${n}">${t}<sup>${n}</sup></span>`);
     const sp=L.audio&&s.match(/^([A-Z][A-Za-z ]{0,14}):\s/); if(sp) return `<p class="line"><b class="spk">${sp[1]}:</b> ${s.slice(sp[0].length)}</p>`;
@@ -782,6 +842,7 @@ function renderPassage(){
   const au=$("#lessonAudio"); if(L.audio){ au.hidden=false; if(!au.src.endsWith(L.audio)) au.src=L.audio; } else { au.hidden=true; au.pause(); au.removeAttribute("src"); }
   $("#readAll").parentElement.hidden=!!L.audio;
   document.querySelector('[data-tab="read"]').textContent=L.audio?"Bài nghe":"Bài đọc";
+  $("#passage").querySelectorAll("[data-sayq]").forEach(b=>b.onclick=e=>speak(b.dataset.sayq,.9,e.currentTarget));
   $("#passage").querySelectorAll(".hl").forEach(el=>{
     const go=()=>{ select(+el.dataset.id); speak(L.words[el.dataset.id].w); };
     el.onclick=go; el.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();go();} };
@@ -825,7 +886,7 @@ function renderDetail(){
       document.querySelector(`.hl[data-id="${items[i].n}"]`)?.scrollIntoView({block:"center",behavior:"smooth"}); }
   });
 }
-$("#readAll").onclick=e=>speak(L.paragraphs.map(strip).join(" "),.9,e.currentTarget);
+$("#readAll").onclick=e=>speak(L.paragraphs.map(p=>strip(p.replace(/^#+ /,"").replace("|",". "))).join(" "),.9,e.currentTarget);
 
 /* --- list tab --- */
 function renderList(){
@@ -1252,7 +1313,7 @@ function showTab(t){
 }
 /* Unit trong từng mục. Bài học thuộc unit nào thì thêm unit:"Unit 2" vào bài đó. */
 const UNITS={
-  ielts:{ listening:["Unit 2"] },
+  ielts:{ listening:["Unit 2"], speaking:["Unit 2"] },
   b1:{ vocabulary:["Unit 12","Unit 13"] }
 };
 /* Lớp học: mỗi lớp có mã riêng (lưu dạng mã hóa). Bài học thuộc lớp nào thì ghi cls:"ielts" hoặc cls:"b1". */
@@ -1324,7 +1385,7 @@ function route(){ const _au=document.getElementById("lessonAudio"); if(_au) _au.
 }
 window.addEventListener("hashchange",route);
 setAccent(accent); route();
-const APP_VERSION="20";
+const APP_VERSION="21";
 /* --- leaderboard (Google Sheets) --- */
 const SCORE_URL=""; // dán link Web app của Google Apps Script vào đây
 function award(state,game,raw,xp){
